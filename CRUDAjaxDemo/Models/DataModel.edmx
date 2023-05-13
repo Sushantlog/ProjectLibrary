@@ -1,0 +1,413 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Project_LibraryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="owner_login">
+          <Key>
+            <PropertyRef Name="Ownerid" />
+          </Key>
+          <Property Name="Ownerid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="firstName" Type="varchar" MaxLength="255" />
+          <Property Name="lastName" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="tbl_CategoryMaster">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="tbl_CollegeMaster">
+          <Key>
+            <PropertyRef Name="CollegeID" />
+          </Key>
+          <Property Name="CollegeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CollegeName" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="tbl_FilesDetails">
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+          <Property Name="FileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SynopsisID" Type="int" />
+          <Property Name="FileName" Type="varchar" MaxLength="255" />
+          <Property Name="FilePath" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="tbl_OTP">
+          <Key>
+            <PropertyRef Name="OTPID" />
+          </Key>
+          <Property Name="OTPID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="OTP" Type="varchar" MaxLength="4" />
+        </EntityType>
+        <EntityType Name="tbl_Registration">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="255" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="Password" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="tbl_SynopsisDetails">
+          <Key>
+            <PropertyRef Name="SynopsisID" />
+          </Key>
+          <Property Name="SynopsisID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="CategoryID" Type="int" />
+          <Property Name="CollegeID" Type="int" />
+          <Property Name="SynopsisHeader" Type="varchar" MaxLength="255" />
+          <Property Name="SynopsisDescription" Type="varchar" MaxLength="1000" />
+        </EntityType>
+        <Association Name="FK__tbl_Files__Synop__571DF1D5">
+          <End Role="tbl_SynopsisDetails" Type="Self.tbl_SynopsisDetails" Multiplicity="0..1" />
+          <End Role="tbl_FilesDetails" Type="Self.tbl_FilesDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_SynopsisDetails">
+              <PropertyRef Name="SynopsisID" />
+            </Principal>
+            <Dependent Role="tbl_FilesDetails">
+              <PropertyRef Name="SynopsisID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_OTP__UserID__4BAC3F29">
+          <End Role="tbl_Registration" Type="Self.tbl_Registration" Multiplicity="0..1" />
+          <End Role="tbl_OTP" Type="Self.tbl_OTP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Registration">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="tbl_OTP">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_Synop__Categ__534D60F1">
+          <End Role="tbl_CategoryMaster" Type="Self.tbl_CategoryMaster" Multiplicity="0..1" />
+          <End Role="tbl_SynopsisDetails" Type="Self.tbl_SynopsisDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_CategoryMaster">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="tbl_SynopsisDetails">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_Synop__Colle__5441852A">
+          <End Role="tbl_CollegeMaster" Type="Self.tbl_CollegeMaster" Multiplicity="0..1" />
+          <End Role="tbl_SynopsisDetails" Type="Self.tbl_SynopsisDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_CollegeMaster">
+              <PropertyRef Name="CollegeID" />
+            </Principal>
+            <Dependent Role="tbl_SynopsisDetails">
+              <PropertyRef Name="CollegeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_Synop__UserI__52593CB8">
+          <End Role="tbl_Registration" Type="Self.tbl_Registration" Multiplicity="0..1" />
+          <End Role="tbl_SynopsisDetails" Type="Self.tbl_SynopsisDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Registration">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="tbl_SynopsisDetails">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Project_LibraryModelStoreContainer">
+          <EntitySet Name="owner_login" EntityType="Self.owner_login" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_CategoryMaster" EntityType="Self.tbl_CategoryMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_CollegeMaster" EntityType="Self.tbl_CollegeMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_FilesDetails" EntityType="Self.tbl_FilesDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_OTP" EntityType="Self.tbl_OTP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Registration" EntityType="Self.tbl_Registration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_SynopsisDetails" EntityType="Self.tbl_SynopsisDetails" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tbl_Files__Synop__571DF1D5" Association="Self.FK__tbl_Files__Synop__571DF1D5">
+            <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
+            <End Role="tbl_FilesDetails" EntitySet="tbl_FilesDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_OTP__UserID__4BAC3F29" Association="Self.FK__tbl_OTP__UserID__4BAC3F29">
+            <End Role="tbl_Registration" EntitySet="tbl_Registration" />
+            <End Role="tbl_OTP" EntitySet="tbl_OTP" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_Synop__Categ__534D60F1" Association="Self.FK__tbl_Synop__Categ__534D60F1">
+            <End Role="tbl_CategoryMaster" EntitySet="tbl_CategoryMaster" />
+            <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_Synop__Colle__5441852A" Association="Self.FK__tbl_Synop__Colle__5441852A">
+            <End Role="tbl_CollegeMaster" EntitySet="tbl_CollegeMaster" />
+            <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_Synop__UserI__52593CB8" Association="Self.FK__tbl_Synop__UserI__52593CB8">
+            <End Role="tbl_Registration" EntitySet="tbl_Registration" />
+            <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Project_LibraryModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tbl_CategoryMaster">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_SynopsisDetails" Relationship="Self.FK__tbl_Synop__Categ__534D60F1" FromRole="tbl_CategoryMaster" ToRole="tbl_SynopsisDetails" />
+        </EntityType>
+        <EntityType Name="tbl_CollegeMaster">
+          <Key>
+            <PropertyRef Name="CollegeID" />
+          </Key>
+          <Property Name="CollegeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CollegeName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_SynopsisDetails" Relationship="Self.FK__tbl_Synop__Colle__5441852A" FromRole="tbl_CollegeMaster" ToRole="tbl_SynopsisDetails" />
+        </EntityType>
+        <EntityType Name="tbl_FilesDetails">
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+          <Property Name="FileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SynopsisID" Type="Int32" />
+          <Property Name="FileName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_SynopsisDetails" Relationship="Self.FK__tbl_Files__Synop__571DF1D5" FromRole="tbl_FilesDetails" ToRole="tbl_SynopsisDetails" />
+        </EntityType>
+        <EntityType Name="tbl_OTP">
+          <Key>
+            <PropertyRef Name="OTPID" />
+          </Key>
+          <Property Name="OTPID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="OTP" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_Registration" Relationship="Self.FK__tbl_OTP__UserID__4BAC3F29" FromRole="tbl_OTP" ToRole="tbl_Registration" />
+        </EntityType>
+        <EntityType Name="tbl_Registration">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_OTP" Relationship="Self.FK__tbl_OTP__UserID__4BAC3F29" FromRole="tbl_Registration" ToRole="tbl_OTP" />
+          <NavigationProperty Name="tbl_SynopsisDetails" Relationship="Self.FK__tbl_Synop__UserI__52593CB8" FromRole="tbl_Registration" ToRole="tbl_SynopsisDetails" />
+        </EntityType>
+        <EntityType Name="tbl_SynopsisDetails">
+          <Key>
+            <PropertyRef Name="SynopsisID" />
+          </Key>
+          <Property Name="SynopsisID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="CollegeID" Type="Int32" />
+          <Property Name="SynopsisHeader" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="SynopsisDescription" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_CategoryMaster" Relationship="Self.FK__tbl_Synop__Categ__534D60F1" FromRole="tbl_SynopsisDetails" ToRole="tbl_CategoryMaster" />
+          <NavigationProperty Name="tbl_CollegeMaster" Relationship="Self.FK__tbl_Synop__Colle__5441852A" FromRole="tbl_SynopsisDetails" ToRole="tbl_CollegeMaster" />
+          <NavigationProperty Name="tbl_FilesDetails" Relationship="Self.FK__tbl_Files__Synop__571DF1D5" FromRole="tbl_SynopsisDetails" ToRole="tbl_FilesDetails" />
+          <NavigationProperty Name="tbl_Registration" Relationship="Self.FK__tbl_Synop__UserI__52593CB8" FromRole="tbl_SynopsisDetails" ToRole="tbl_Registration" />
+        </EntityType>
+        <Association Name="FK__tbl_Synop__Categ__534D60F1">
+          <End Role="tbl_CategoryMaster" Type="Self.tbl_CategoryMaster" Multiplicity="0..1" />
+          <End Role="tbl_SynopsisDetails" Type="Self.tbl_SynopsisDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_CategoryMaster">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="tbl_SynopsisDetails">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_Synop__Colle__5441852A">
+          <End Role="tbl_CollegeMaster" Type="Self.tbl_CollegeMaster" Multiplicity="0..1" />
+          <End Role="tbl_SynopsisDetails" Type="Self.tbl_SynopsisDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_CollegeMaster">
+              <PropertyRef Name="CollegeID" />
+            </Principal>
+            <Dependent Role="tbl_SynopsisDetails">
+              <PropertyRef Name="CollegeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_Files__Synop__571DF1D5">
+          <End Role="tbl_SynopsisDetails" Type="Self.tbl_SynopsisDetails" Multiplicity="0..1" />
+          <End Role="tbl_FilesDetails" Type="Self.tbl_FilesDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_SynopsisDetails">
+              <PropertyRef Name="SynopsisID" />
+            </Principal>
+            <Dependent Role="tbl_FilesDetails">
+              <PropertyRef Name="SynopsisID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_OTP__UserID__4BAC3F29">
+          <End Role="tbl_Registration" Type="Self.tbl_Registration" Multiplicity="0..1" />
+          <End Role="tbl_OTP" Type="Self.tbl_OTP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Registration">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="tbl_OTP">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_Synop__UserI__52593CB8">
+          <End Role="tbl_Registration" Type="Self.tbl_Registration" Multiplicity="0..1" />
+          <End Role="tbl_SynopsisDetails" Type="Self.tbl_SynopsisDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Registration">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="tbl_SynopsisDetails">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ProjectLibraryEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbl_CategoryMaster" EntityType="Self.tbl_CategoryMaster" />
+          <EntitySet Name="tbl_CollegeMaster" EntityType="Self.tbl_CollegeMaster" />
+          <EntitySet Name="tbl_FilesDetails" EntityType="Self.tbl_FilesDetails" />
+          <EntitySet Name="tbl_OTP" EntityType="Self.tbl_OTP" />
+          <EntitySet Name="tbl_Registration" EntityType="Self.tbl_Registration" />
+          <EntitySet Name="tbl_SynopsisDetails" EntityType="Self.tbl_SynopsisDetails" />
+          <AssociationSet Name="FK__tbl_Synop__Categ__534D60F1" Association="Self.FK__tbl_Synop__Categ__534D60F1">
+            <End Role="tbl_CategoryMaster" EntitySet="tbl_CategoryMaster" />
+            <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_Synop__Colle__5441852A" Association="Self.FK__tbl_Synop__Colle__5441852A">
+            <End Role="tbl_CollegeMaster" EntitySet="tbl_CollegeMaster" />
+            <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_Files__Synop__571DF1D5" Association="Self.FK__tbl_Files__Synop__571DF1D5">
+            <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
+            <End Role="tbl_FilesDetails" EntitySet="tbl_FilesDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_OTP__UserID__4BAC3F29" Association="Self.FK__tbl_OTP__UserID__4BAC3F29">
+            <End Role="tbl_Registration" EntitySet="tbl_Registration" />
+            <End Role="tbl_OTP" EntitySet="tbl_OTP" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_Synop__UserI__52593CB8" Association="Self.FK__tbl_Synop__UserI__52593CB8">
+            <End Role="tbl_Registration" EntitySet="tbl_Registration" />
+            <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
+          </AssociationSet>
+          <EntitySet Name="owner_login" EntityType="Project_LibraryModel.owner_login" />
+        </EntityContainer>
+        <EntityType Name="owner_login">
+          <Key>
+            <PropertyRef Name="Ownerid" />
+          </Key>
+          <Property Name="Ownerid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="firstName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="lastName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Project_LibraryModelStoreContainer" CdmEntityContainer="ProjectLibraryEntities">
+          <EntitySetMapping Name="tbl_CategoryMaster">
+            <EntityTypeMapping TypeName="Project_LibraryModel.tbl_CategoryMaster">
+              <MappingFragment StoreEntitySet="tbl_CategoryMaster">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_CollegeMaster">
+            <EntityTypeMapping TypeName="Project_LibraryModel.tbl_CollegeMaster">
+              <MappingFragment StoreEntitySet="tbl_CollegeMaster">
+                <ScalarProperty Name="CollegeID" ColumnName="CollegeID" />
+                <ScalarProperty Name="CollegeName" ColumnName="CollegeName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_FilesDetails">
+            <EntityTypeMapping TypeName="Project_LibraryModel.tbl_FilesDetails">
+              <MappingFragment StoreEntitySet="tbl_FilesDetails">
+                <ScalarProperty Name="FileID" ColumnName="FileID" />
+                <ScalarProperty Name="SynopsisID" ColumnName="SynopsisID" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_OTP">
+            <EntityTypeMapping TypeName="Project_LibraryModel.tbl_OTP">
+              <MappingFragment StoreEntitySet="tbl_OTP">
+                <ScalarProperty Name="OTPID" ColumnName="OTPID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="OTP" ColumnName="OTP" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Registration">
+            <EntityTypeMapping TypeName="Project_LibraryModel.tbl_Registration">
+              <MappingFragment StoreEntitySet="tbl_Registration">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_SynopsisDetails">
+            <EntityTypeMapping TypeName="Project_LibraryModel.tbl_SynopsisDetails">
+              <MappingFragment StoreEntitySet="tbl_SynopsisDetails">
+                <ScalarProperty Name="SynopsisID" ColumnName="SynopsisID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CollegeID" ColumnName="CollegeID" />
+                <ScalarProperty Name="SynopsisHeader" ColumnName="SynopsisHeader" />
+                <ScalarProperty Name="SynopsisDescription" ColumnName="SynopsisDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="owner_login">
+            <EntityTypeMapping TypeName="Project_LibraryModel.owner_login">
+              <MappingFragment StoreEntitySet="owner_login">
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="Ownerid" ColumnName="Ownerid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

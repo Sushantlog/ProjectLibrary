@@ -1,0 +1,103 @@
+﻿
+@model CRUDAjaxDemo.Models.tbl_Registration
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="form-box">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <p id="result"></p>
+            @Html.HiddenFor(model => model.UserID)
+            <div class="input-box">
+                <i class='bx bxs-user'></i>
+                @Html.TextBoxFor(model => model.UserName, new { @placeholder = "User Name" })
+            </div>
+            <div class="input-box">
+                <i class='bx bxs-envelope'></i>
+                @Html.TextBoxFor(model => model.Email, new { @placeholder = "Email" })
+            </div>
+            <div class="input-box">
+                <i class='bx bxs-lock-alt'></i>
+                @Html.TextBoxFor(model => model.Password, new { @placeholder = "Password" })
+            </div>
+            <div class="input-box">
+                <i class='bx bxs-lock-alt'></i>
+                @Html.TextBox("ConfirmPassword", null, new { @placeholder = "Confirm Password" })
+            </div>
+            <div class="button">
+                <input value="Register" class="btn" type="button" onclick="Register()" />
+            </div>
+           }
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //tostr.success("me1");
+    });
+
+    function Register() {
+
+        if ($("#UserName").val() == undefined || $("#UserName").val() == '') {
+            toastr.error("Please enter User Name");
+            return;
+        }
+
+        if ($("#Email").val() == undefined || $("#Email").val() == '') {
+            toastr.error("Please enter email");
+            return;
+        }
+
+        if ($("#Password").val() == undefined || $("#Password").val() == '') {
+            toastr.error("Please enter password");
+            return;
+        }
+
+        if ($("#ConfirmPassword").val() == undefined || $("#ConfirmPassword").val() == '') {
+            toastr.error("Please enter Confirm Password");
+            return;
+        }
+
+        if ($("#Password").val() !=  $("#ConfirmPassword").val()) {
+            toastr.error("Password & Confirm Password are different! Please enter correct values!");
+            return;
+        }
+
+        var objRegister = new Object();
+        objRegister.Username = $("#UserName").val();
+        objRegister.Email = $("#Email").val();
+        objRegister.Password = $("#Password").val();
+
+        var data = JSON.stringify({ objRegister: objRegister });
+        $.ajax({
+            url: "/Registration/Save",
+            type: "POST",
+            data: data,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result.IsValid) {
+                    toastr.success(result.ResultMessage);
+
+                    setTimeout(
+                        window.open(result.RedirectToUrl, "_self")
+                        //window.location.href = result.RedirectToUrl
+                        , 15000);
+                }
+                else {
+                    toastr.error(result.ResultMessage)
+                }
+            },
+            error: function (errormessage) {
+                toastr.error("Error");
+            }
+        });
+    }
+
+</script>
+

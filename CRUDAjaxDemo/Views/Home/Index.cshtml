@@ -1,0 +1,101 @@
+﻿@model CRUDAjaxDemo.ViewModels.HomeViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'poppins',sans-serif;
+    }
+
+    .form-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: black;
+        flex-direction: none;
+        gap: 50px;
+    }
+
+    a {
+        position: relative;
+        background: #fff;
+        color: #fff;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 1.5em;
+        letter-spacing: 0.5em;
+        font-weight: 400;
+        padding: 10px 30px;
+        transition: 0.5s;
+    }
+
+        a:hover {
+            background: var(--clr);
+            color: var(--clr);
+            letter-spacing: 0.25em;
+            box-shadow: 0 0 35px var(--clr);
+        }
+
+        a:before {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: #27282c;
+        }
+
+        a span {
+            position: relative;
+            z-index: 1;
+        }
+    .header {
+        display: inline-block;
+        width: 100%;
+        height: 30%;
+        border: 1px black solid;
+        background: aliceblue;
+        vertical-align: top; 
+    }
+    .container {
+        display: block !important;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .innercontainer {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+</style>
+
+@*@Html.ActionLink("Login", "Index", "Login", null, new { @class = "btn btn-primary btn-large" })*@
+<div class="header">
+    @Html.HiddenFor(m=>m.UserId)
+    <div style="text-align:right"><label>Welcome @Model.Email</label></div> 
+</div>
+<div class="innercontainer">
+    <div class="homePage form-box">
+        <h1>Welcome To Project Library</h1>
+    </div>
+    <div class="button">
+        <span>  @Html.ActionLink("Upload", "Index", "Synopsis", new { ID= Model.UserId},new { style = "--clr:#1e9bff" })</span>
+        <span>  @Html.ActionLink("View", "ViewFiles", "Synopsis", new { ID = Model.UserId }, new { style = "--clr:#1e9bff" })</span>
+    </div>
+</div>
+
+
+

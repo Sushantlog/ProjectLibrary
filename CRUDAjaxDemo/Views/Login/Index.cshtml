@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="form-box">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <h2>Login In</h2>
+        <div class="input-box">
+            <i class='bx bxs-envelope'></i>
+            @Html.TextBox("Email", null, new { @placeholder = "Email" })
+        </div>
+        <div class="input-box">
+            <i class='bx bxs-lock-alt'></i>
+            @Html.TextBox("Password", null, new { @placeholder = "Password" })
+        </div>
+
+        <div class="button">
+            <input value="Login" class="btn" type="button" onclick="Login()" />
+        </div>
+        <div class="group" style="padding-top:2em">
+            <span>
+                @Html.ActionLink("Forgot-Password", "ForgotPassword", "Login", null, new { @class = "btn btn-primary btn-large" })
+            </span>
+            <span>
+                @Html.ActionLink("Sign In", "Register", "Registration", null, new { @class = "btn btn-primary btn-large" })
+            </span>
+        </div>
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //tostr.success("me1");
+    });
+
+    function Login() {
+        if ($("#Email").val() == undefined || $("#Email").val() == '') {
+            toastr.error("Please enter email");
+            return;
+        }
+
+        if ($("#Password").val() == undefined || $("#Password").val() == '') {
+            toastr.error("Please enter password");
+            return;
+        }
+
+        var objLogin = new Object();
+        objLogin.Email = $("#Email").val();
+        objLogin.Password = $("#Password").val();
+        var data = JSON.stringify({ objLogin: objLogin });
+        $.ajax({
+            url: "/Login/Userlogin",
+            type: "POST",
+            data: data,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result.IsValid) {
+                    toastr.success(result.ResultMessage);
+                    setTimeout(
+                        window.location.href = result.redirectToUrl
+                        , 15000);
+
+
+                }
+                else {
+                    toastr.error(result.ResultMessage)
+                }
+            },
+            error: function (errormessage) {
+                toastr.error("Error");
+            }
+        });
+    }
+
+</script>

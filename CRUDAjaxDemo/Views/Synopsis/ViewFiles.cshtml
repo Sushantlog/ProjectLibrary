@@ -1,0 +1,102 @@
+﻿@model CRUDAjaxDemo.ViewModels.FilesListModel
+
+@{
+    ViewBag.Title = "ViewFiles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ViewFiles</h2>
+
+@Html.HiddenFor(model => model.LoginUserId)
+<table class="table" style="background-color:white;color:black">
+    <tr>
+        <th>
+            <span>Student</span>
+        </th>
+        <th>
+            <span>College</span>
+        </th>
+        <th>
+            <span>Category</span>
+        </th>
+        <th>
+            <span>Projet Name</span>
+        </th>
+        <th>
+            <span>Problem Statement</span>
+        </th>
+        <th>
+            <span>Files</span>
+        </th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model.SynopsysList)
+    {
+        <tr>
+            <td>
+                @Html.HiddenFor(modelItem => item.SynopsisId)
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CollegeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SynopsisHeader)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SynopsisDescription)
+            </td>
+            <td>
+                @foreach (var files in item.Files)
+                {
+                    @Html.DisplayFor(model => files.FileName)<br />
+                }
+            </td>
+            <td>
+                <div class="button">
+                    <input value="Edit" class="btn" type="button" onclick="EditSynopsisDetails('@item.SynopsisId')" />
+                </div>
+            </td>
+        </tr>
+    }
+
+</table>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //tostr.success("me1");
+    });
+
+    function EditSynopsisDetails(SynopsisId) {
+
+        var objSynopsis = new Object();
+        objSynopsis.UserId = parseInt( $("#LoginUserId").val());
+        objSynopsis.SynopsisId = parseInt(SynopsisId);
+        var data = JSON.stringify({ objSynopsis: objSynopsis });
+
+        $.ajax({
+            url: "/Synopsis/EditSynopsisDetails",
+            type: "POST",
+            data: data,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result.IsValid) {
+                    toastr.success(result.ResultMessage);
+                }
+                else {
+                    toastr.error(result.ResultMessage)
+                }
+            },
+            error: function (errormessage) {
+                toastr.error("Error");
+            }
+        });
+    }
+
+</script>

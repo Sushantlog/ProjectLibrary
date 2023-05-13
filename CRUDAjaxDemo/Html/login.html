@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login in</title>
+    <link rel="stylesheet" href="style.css">
+	
+</head>
+<body><div class="container">
+	<div class="form-box">
+		<form action="" name="Formfill" onsubmit="return validation()">
+			<h2>Login In</h2>
+			<p id="result">head</p>
+			
+			<div class="input-box">
+				<i class='bx bxs-envelope' ></i>
+				<input type="email" name="email" placeholder="email" id="email" required>
+			</div>
+			<div class="input-box">
+				<i class='bx bxs-lock-alt'></i>
+				<input type="password" id="password" name="password" placeholder="password" required>
+			</div>
+			
+			<div class="button">
+				<input type="submit" class="btn" value="Login" onclick="validation()">
+				
+			</div>
+            <div class="group">
+				<span><a href="password.html">Forget-password</a></span>
+				<span><a href="project.html">sign in</a></span>
+			</div>
+		</form>
+	</div>
+	<script>
+		function validation(){
+		var email = document.getElementById("email").value;
+		var pass = document.getElementById("password").value;
+		if (email == 'suraj@123gmail.com' && pass == '123456'){
+			
+			window.location.assign("main.html");
+			alert("Login Successfully!");
+			
+		}
+		else
+		{
+			alert("wrong entry invalid")
+		}
+		}
+	</script>
+    
+</body>
+</html>

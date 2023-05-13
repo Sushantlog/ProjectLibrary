@@ -1,0 +1,105 @@
+﻿@model CRUDAjaxDemo.ViewModels.SynopsisModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="form-box">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <h2>Synopsis</h2>
+        @Html.HiddenFor(m=>m.UserId)
+
+        <div class="input-box">
+            <i class='bx bxs-envelope'></i>
+            @Html.DropDownList("College", (IEnumerable<SelectListItem>)ViewData["College"])
+        </div>
+        <div class="input-box">
+            <i class='bx bxs-lock-alt'></i>
+            @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewData["Category"])
+        </div>
+
+        <div class="input-box">
+            <i class='bx bxs-lock-alt'></i>
+            @Html.TextBoxFor(model => model.SynopsisHeader, new { @placeholder = "Project Name" })
+        </div>
+        <div class="input-box">
+            <i class='bx bxs-lock-alt'></i>
+            @Html.TextBoxFor(model => model.SynopsisDescription, new { @placeholder = "Problem Statement" })
+        </div>
+        <div class="input-box">
+            <i class='bx bxs-lock-alt'></i>
+            @Html.TextBox("files", "", new { @type = "file", @multiple = "multiple" })
+        </div>
+        <div class="button">
+            <input value="Save" class="btn" type="button" onclick="SaveSynopsisDetails()" />
+        </div>
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //tostr.success("me1");
+    });
+
+    function SaveSynopsisDetails() {
+        if ($("#College").val() == undefined || $("#College").val() == '') {
+            toastr.error("Please select College");
+            return;
+        }
+
+        if ($("#Category").val() == undefined || $("#Category").val() == '') {
+            toastr.error("Please select Category");
+            return;
+        }
+
+        if ($("#SynopsisHeader").val() == undefined || $("#SynopsisHeader").val() == '') {
+            toastr.error("Please enter project name");
+            return;
+        }
+
+        if ($("#SynopsisDescription").val() == undefined || $("#SynopsisDescription").val() == '') {
+            toastr.error("Please enter problem statement");
+            return;
+        }
+
+        if ($("#files").val() == undefined || $("#files").val() == '') {
+            toastr.error("Please select file");
+            return;
+        }
+
+
+        var fileSelect = $('#files').get(0);
+        var files = fileSelect.files;
+
+        var fileData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+        }
+        // Adding one more key to FormData object  
+        fileData.append('UserId', $("#UserId").val()); 
+        fileData.append('CollegeID', $("#College").val()); 
+        fileData.append('CategoryId', $("#Category").val()); 
+        fileData.append('SynopsisHeader', $("#SynopsisHeader").val()); 
+        fileData.append('SynopsisDescription', $("#SynopsisDescription").val()); 
+
+        $.ajax({
+            url: "/Synopsis/SaveSynopsisDetails",
+            type: "POST",
+            data: fileData,
+            contentType: false, // Not to set any content header  
+            processData: false, // Not to process data  
+            success: function (result) {
+                if (result.IsValid) {
+                    toastr.success(result.ResultMessage);
+                }
+                else {
+                    toastr.error(result.ResultMessage)
+                }
+            },
+            error: function (errormessage) {
+                toastr.error("Error");
+            }
+        });
+    }
+
+</script>
