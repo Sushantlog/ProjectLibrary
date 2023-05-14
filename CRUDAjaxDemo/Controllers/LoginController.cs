@@ -24,44 +24,49 @@ namespace CRUDAjaxDemo.Controllers
         // post: Login
         public JsonResult Userlogin(LoginViewModel objLogin)
         {
-            ProjectLibraryEntities std = new ProjectLibraryEntities();
-            var resultMessage = string.Empty;
-            var isValid = false;
-            var id = 0;
-            var IsvalidUser = false;
-            if (std.tbl_Registration.Any(m => m.Email == objLogin.Email))
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                IsvalidUser = true;
-            }
-            if (IsvalidUser)
-            {
-                var UserDetails = std.tbl_Registration.Where(m => m.Email == objLogin.Email).FirstOrDefault();
-                if (UserDetails.Password == objLogin.Password)
+                std.Database.Connection.Open();
+                var resultMessage = string.Empty;
+                var isValid = false;
+                var id = 0;
+                var IsvalidUser = false;
+                if (std.tbl_Registration.Any(m => m.Email == objLogin.Email))
                 {
-                    isValid = true;
-                    resultMessage = "Login Successfull";
-                    id = UserDetails.UserID;
+                    IsvalidUser = true;
+                }
+                if (IsvalidUser)
+                {
+                    var UserDetails = std.tbl_Registration.Where(m => m.Email == objLogin.Email).FirstOrDefault();
+                    if (UserDetails.Password == objLogin.Password)
+                    {
+                        isValid = true;
+                        resultMessage = "Login Successfull";
+                        id = UserDetails.UserID;
+                    }
+                    else
+                    {
+                        isValid = false;
+                        resultMessage = "Invalid Password";
+                    }
+                    return Json(
+                        new
+                        {
+                            IsValid = isValid,
+                            ResultMessage = resultMessage,
+                            Id = id,
+                            redirectToUrl = Url.Action("Index", "Home", new { Id = id })
+                        }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
                     isValid = false;
-                    resultMessage = "Invalid Password";
+                    resultMessage = "Invalid Email";
                 }
-                return Json(
-                    new
-                    {
-                        IsValid = isValid,
-                        ResultMessage = resultMessage,
-                        Id = id,
-                        redirectToUrl = Url.Action("Index", "Home", new { Id = id })
-                    }, JsonRequestBehavior.AllowGet);
+                return Json(new { IsValid = isValid, ResultMessage = resultMessage, Id = id }, JsonRequestBehavior.AllowGet);
             }
-            else
-            {
-                isValid = false;
-                resultMessage = "Invalid Email";
-            }
-            return Json(new { IsValid = isValid, ResultMessage = resultMessage, Id = id }, JsonRequestBehavior.AllowGet);
+            ;
+            
         }
 
         // GET: 

@@ -31,6 +31,5 @@ namespace CRUDAjaxDemo.Models
         public virtual DbSet<tbl_OTP> tbl_OTP { get; set; }
         public virtual DbSet<tbl_Registration> tbl_Registration { get; set; }
         public virtual DbSet<tbl_SynopsisDetails> tbl_SynopsisDetails { get; set; }
-        public virtual DbSet<owner_login> owner_login { get; set; }
     }
 }
