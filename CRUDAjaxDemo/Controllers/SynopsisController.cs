@@ -83,9 +83,9 @@ namespace CRUDAjaxDemo.Controllers
                 IsValid = true,
                 ResultMessage = "Project saved Successfully",
                 Id = synopsisModel.SynopsisID,
+                redirectToUrl = Url.Action("ViewFiles", "Synopsis", new { Id = objSynopsis.UserId })
             }, JsonRequestBehavior.AllowGet);
         }
-
 
         // GET: Synopsis
         public ActionResult ViewFiles(int Id)
@@ -93,7 +93,7 @@ namespace CRUDAjaxDemo.Controllers
             ProjectLibraryEntities std = new ProjectLibraryEntities();
             FilesListModel FileList = new FilesListModel();
             FileList.LoginUserId = Id;
-            FileList.SynopsysList = std.tbl_SynopsisDetails.Where(m => m.UserID == Id).Select(m => new SynopsisModel()
+            FileList.SynopsysList = std.tbl_SynopsisDetails.AsEnumerable().Where(m => m.UserID == Id).Select(m => new SynopsisModel()
             {
                 SynopsisId = m.SynopsisID,
                 UserId = m.UserID,
@@ -106,7 +106,7 @@ namespace CRUDAjaxDemo.Controllers
 
                 SynopsisHeader = m.SynopsisHeader,
                 SynopsisDescription = m.SynopsisDescription,
-                Files = m.tbl_FilesDetails.Select(n => new FilesViewModel()
+                Files = m.tbl_FilesDetails.AsEnumerable().Select(n => new FilesViewModel()
                 {
                     FileID = n.FileID,
                     SynopsisID = n.SynopsisID,
@@ -116,6 +116,33 @@ namespace CRUDAjaxDemo.Controllers
             }).ToList();
 
             return View(FileList);
+        }
+
+        // POST: Synopsis
+        public ActionResult EditSynopsisDetails(EditSynopsisModel objSynopsis)
+        {
+            ProjectLibraryEntities std = new ProjectLibraryEntities();
+            var SynopsysDetails = std.tbl_SynopsisDetails.Where(m => m.UserID == objSynopsis.UserId && m.SynopsisID == objSynopsis.SynopsisId).FirstOrDefault();
+            if (SynopsysDetails != null)
+            {
+
+            }
+            return Json(new
+            {
+                IsValid = true,
+                ResultMessage = "Project saved Successfully",
+                //Id = synopsisModel.SynopsisID,
+                redirectToUrl = Url.Action("ViewFiles", "Synopsis", new { Id = objSynopsis.UserId })
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Download(int FileId)
+        {
+            ProjectLibraryEntities std = new ProjectLibraryEntities();
+            var FileDetails = std.tbl_FilesDetails.Where(m => m.FileID == FileId).FirstOrDefault();
+            byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath(FileDetails.FilePath));
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, FileDetails.FileName);
+
         }
     }
 }

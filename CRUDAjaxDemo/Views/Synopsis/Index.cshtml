@@ -91,6 +91,10 @@
             success: function (result) {
                 if (result.IsValid) {
                     toastr.success(result.ResultMessage);
+                    setTimeout(
+                        window.location.href = result.redirectToUrl
+                        , 15000);
+
                 }
                 else {
                     toastr.error(result.ResultMessage)

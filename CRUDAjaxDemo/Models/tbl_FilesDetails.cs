@@ -11,14 +11,14 @@ namespace CRUDAjaxDemo.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
     public partial class tbl_FilesDetails
     {
         public int FileID { get; set; }
         public Nullable<int> SynopsisID { get; set; }
         public string FileName { get; set; }
         public string FilePath { get; set; }
-    
+
         public virtual tbl_SynopsisDetails tbl_SynopsisDetails { get; set; }
     }
 }

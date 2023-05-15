@@ -30,4 +30,16 @@ namespace CRUDAjaxDemo.ViewModels
 
         public List<SynopsisModel> SynopsysList { get; set; }
     }
+
+    public class EditSynopsisModel
+    {
+        public int UserId { get; set; }
+
+        public int SynopsisId { get; set; }
+    }
+
+    public class DownloadFileModel
+    {
+        public int FileId { get; set; }
+    }
 }

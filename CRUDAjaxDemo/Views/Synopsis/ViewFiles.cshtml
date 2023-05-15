@@ -53,7 +53,9 @@
             <td>
                 @foreach (var files in item.Files)
                 {
-                    @Html.DisplayFor(model => files.FileName)<br />
+                    @Html.DisplayFor(model => files.FileName)
+                     <a href="@Url.Action("Download", "Synopsis", new { FileId = @files.FileID })"><img src="~/Images/Download.png"/></a>
+                    <br />
                 }
             </td>
             <td>
@@ -98,5 +100,4 @@
             }
         });
     }
-
 </script>
