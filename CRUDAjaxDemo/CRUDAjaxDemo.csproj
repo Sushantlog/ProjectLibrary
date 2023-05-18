@@ -109,6 +109,7 @@
     <Content Include="Html\style.css" />
     <Content Include="Html\upload.html" />
     <Content Include="Images\Download.png" />
+    <Content Include="Images\User-png.png" />
     <Content Include="Models\DataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>DataModel.edmx</DependentUpon>

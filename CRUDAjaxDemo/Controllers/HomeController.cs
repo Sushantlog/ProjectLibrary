@@ -13,6 +13,10 @@ namespace CRUDAjaxDemo.Controllers
         // GET: Home
         public ActionResult Index(int Id)
         {
+            if (Session["UserID"] !=null && Session["UserID"].ToString() != Id.ToString())
+            {
+                return RedirectToAction("Index", "login");
+            }
             ProjectLibraryEntities std = new ProjectLibraryEntities();
 
             var UserDetails = std.tbl_Registration.Where(m => m.UserID == Id).FirstOrDefault();
@@ -20,6 +24,7 @@ namespace CRUDAjaxDemo.Controllers
             HomeViewModel homeViewModel = new HomeViewModel();
             homeViewModel.Email = UserDetails.Email;
             homeViewModel.UserId = UserDetails.UserID;
+            homeViewModel.UserName = UserDetails.UserName;
 
             return View(homeViewModel);
         }

@@ -16,6 +16,10 @@ namespace CRUDAjaxDemo.Controllers
         // GET: Synopsis
         public ActionResult Index(int Id)
         {
+            if (Session["UserID"] != null && Session["UserID"].ToString() != Id.ToString())
+            {
+                return RedirectToAction("Index", "login");
+            }
             ProjectLibraryEntities std = new ProjectLibraryEntities();
 
             var categoryMaster = new SelectList(std.tbl_CategoryMaster.ToList(), "CategoryID", "CategoryName");
@@ -90,6 +94,11 @@ namespace CRUDAjaxDemo.Controllers
         // GET: Synopsis
         public ActionResult ViewFiles(int Id)
         {
+            if (Session["UserID"] != null && Session["UserID"].ToString() != Id.ToString())
+            {
+                return RedirectToAction("Index", "login");
+            }
+
             ProjectLibraryEntities std = new ProjectLibraryEntities();
             FilesListModel FileList = new FilesListModel();
             FileList.LoginUserId = Id;

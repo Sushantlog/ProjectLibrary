@@ -42,6 +42,7 @@ namespace CRUDAjaxDemo.Controllers
                     {
                         isValid = true;
                         resultMessage = "Login Successfull";
+                        Session["UserID"] = UserDetails.UserID.ToString();
                         id = UserDetails.UserID;
                     }
                     else
