@@ -4,9 +4,72 @@
     ViewBag.Title = "ViewFiles";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
 
-<h2>ViewFiles</h2>
+    body {
+        padding-top: 0px !important;
+        padding-bottom: 20px;
+    }
 
+    .container {
+        display: block !important;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        max-width: 100% !important;
+        padding: 0px !important;
+    }
+
+    .downloadIcon {
+        height: 20px;
+    }
+
+    .header {
+        background-color: white;
+        color: black;
+        min-height: 70px !important;
+        align-items: center;
+        text-align: center;
+    }
+
+    .table {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        .table td, .table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .table tr:hover {
+            background-color: #ddd;
+        }
+
+        .table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+
+    .headerText {
+        padding-top: 15px;
+    }
+    .btnDiv {
+    text-align:right;   
+    padding:10px;
+    }
+</style>
+<div class="header">
+    <h2 class="headerText">Project Library</h2>
+</div>
 @Html.HiddenFor(model => model.LoginUserId)
 <table class="table" style="background-color:white;color:black">
     <tr>
@@ -54,19 +117,27 @@
                 @foreach (var files in item.Files)
                 {
                     @Html.DisplayFor(model => files.FileName)
-                     <a href="@Url.Action("Download", "Synopsis", new { FileId = @files.FileID })"><img src="~/Images/Download.png"/></a>
+                    <a href="@Url.Action("Download", "Synopsis", new { FileId = @files.FileID })">
+                        <img src="~/Images/Download.png" class="downloadIcon" />
+                    </a>
                     <br />
                 }
             </td>
             <td>
-                <div class="button">
-                    <input value="Edit" class="btn" type="button" onclick="EditSynopsisDetails('@item.SynopsisId')" />
-                </div>
+                @if (item.UserId == Model.LoginUserId)
+                {
+                    <div class="button">
+                        <input value="Edit" class="btn" type="button" onclick="EditSynopsisDetails('@item.SynopsisId')" />
+                    </div>
+                }
             </td>
         </tr>
     }
 
 </table>
+<div class="btnDiv">
+    <a href="@Url.Action("Index", "Home", new { Id=Model.LoginUserId})" class="btn btn-info"><span>Home</span></a>
+</div>
 
 
 <script type="text/javascript">
@@ -77,7 +148,7 @@
     function EditSynopsisDetails(SynopsisId) {
 
         var objSynopsis = new Object();
-        objSynopsis.UserId = parseInt( $("#LoginUserId").val());
+        objSynopsis.UserId = parseInt($("#LoginUserId").val());
         objSynopsis.SynopsisId = parseInt(SynopsisId);
         var data = JSON.stringify({ objSynopsis: objSynopsis });
 

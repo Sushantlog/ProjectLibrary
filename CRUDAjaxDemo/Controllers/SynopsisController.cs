@@ -102,7 +102,7 @@ namespace CRUDAjaxDemo.Controllers
             ProjectLibraryEntities std = new ProjectLibraryEntities();
             FilesListModel FileList = new FilesListModel();
             FileList.LoginUserId = Id;
-            FileList.SynopsysList = std.tbl_SynopsisDetails.AsEnumerable().Where(m => m.UserID == Id).Select(m => new SynopsisModel()
+            FileList.SynopsysList = std.tbl_SynopsisDetails.AsEnumerable().Select(m => new SynopsisModel()
             {
                 SynopsisId = m.SynopsisID,
                 UserId = m.UserID,
