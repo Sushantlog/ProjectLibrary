@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.WebSockets;
+using PagedList;
+using PagedList.Mvc;
 
 namespace CRUDAjaxDemo.Controllers
 {
@@ -92,18 +94,25 @@ namespace CRUDAjaxDemo.Controllers
         }
 
         // GET: Synopsis
-        public ActionResult ViewFiles(int Id)
+        public ActionResult ViewFiles(int Id, int? page)
         {
             if (Session["UserID"] != null && Session["UserID"].ToString() != Id.ToString())
             {
                 return RedirectToAction("Index", "login");
             }
 
+            int pageSize = 10;
+            int pageIndex = 1;
+            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+
             ProjectLibraryEntities std = new ProjectLibraryEntities();
             FilesListModel FileList = new FilesListModel();
             FileList.LoginUserId = Id;
-            FileList.SynopsysList = std.tbl_SynopsisDetails.AsEnumerable().Select(m => new SynopsisModel()
+            IPagedList<SynopsisModel> synopsysList = null;
+
+            synopsysList = std.tbl_SynopsisDetails.AsEnumerable().Select((m, i) => new SynopsisModel()
             {
+                Index = i + 1,
                 SynopsisId = m.SynopsisID,
                 UserId = m.UserID,
                 CategoryId = m.CategoryID,
@@ -122,8 +131,8 @@ namespace CRUDAjaxDemo.Controllers
                     FileName = n.FileName,
                     FilePath = n.FilePath
                 }).ToList()
-            }).ToList();
-
+            }).ToPagedList(pageIndex, pageSize);
+            FileList.SynopsysList = synopsysList;
             return View(FileList);
         }
 

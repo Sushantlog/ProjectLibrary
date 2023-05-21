@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PagedList;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace CRUDAjaxDemo.ViewModels
 {
     public class SynopsisModel
     {
+        public int Index { get; set; }
         public int? SynopsisId { get; set; }
         public int? UserId { get; set; }
         public int? CategoryId { get; set; }
@@ -28,7 +30,12 @@ namespace CRUDAjaxDemo.ViewModels
     {
         public int LoginUserId { get; set; }
 
-        public List<SynopsisModel> SynopsysList { get; set; }
+        public IPagedList<SynopsisModel> SynopsysList { get; set; }
+
+        public int PageCount { get; set; }
+
+        public int PageNumber { get; set; }
+
     }
 
     public class EditSynopsisModel
@@ -37,9 +44,13 @@ namespace CRUDAjaxDemo.ViewModels
 
         public int SynopsisId { get; set; }
     }
-
-    public class DownloadFileModel
+    public class SearchModel
     {
-        public int FileId { get; set; }
+        public int? UserId { get; set; }
+        public string UserName { get; set; }
+        public int? CategoryId { get; set; }
+        public int? CollegeID { get; set; }
+        public string SynopsisHeader { get; set; }
+        public string SynopsisDescription { get; set; }
     }
 }

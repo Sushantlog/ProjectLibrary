@@ -1,4 +1,6 @@
 ﻿@model CRUDAjaxDemo.ViewModels.FilesListModel
+@using PagedList
+@using PagedList.Mvc
 
 @{
     ViewBag.Title = "ViewFiles";
@@ -62,113 +64,253 @@
     .headerText {
         padding-top: 15px;
     }
+
     .btnDiv {
-    text-align:right;   
-    padding:10px;
+        text-align: right;
+        padding: 10px;
     }
+
+    #Paging {
+        color: white;
+    }
+
+    .pagination-container .pagination li {
+        padding: 10px;
+        border: 1px solid gray;
+        font-size: 25px;
+        background-color: darkgray;
+    }
+
+    .pagination-container {
+        align-items: center
+    }
+
+
+    .Pager span {
+        text-align: center;
+        color: #333;
+        display: inline-block;
+        width: 20px;
+        background-color: #B8DBFD;
+        margin-right: 3px;
+        line-height: 150%;
+        border: 1px solid #B8DBFD;
+    }
+
+    .Pager a {
+        text-align: center;
+        display: inline-block;
+        width: 20px;
+        background-color: #ccc;
+        color: #333;
+        border: 1px solid #ccc;
+        margin-right: 3px;
+        line-height: 150%;
+        text-decoration: none;
+    }
+
+    .SearchBox {
+        color: black;
+        display: flex;
+        background-color: aqua;
+        padding: 5px;
+        align-items: flex-end;
+    }
+
+        .SearchBox input, select {
+            width: 50%
+        }
 </style>
 <div class="header">
     <h2 class="headerText">Project Library</h2>
 </div>
-@Html.HiddenFor(model => model.LoginUserId)
-<table class="table" style="background-color:white;color:black">
-    <tr>
-        <th>
-            <span>Student</span>
-        </th>
-        <th>
-            <span>College</span>
-        </th>
-        <th>
-            <span>Category</span>
-        </th>
-        <th>
-            <span>Projet Name</span>
-        </th>
-        <th>
-            <span>Problem Statement</span>
-        </th>
-        <th>
-            <span>Files</span>
-        </th>
-        <th>Action</th>
-    </tr>
-
-    @foreach (var item in Model.SynopsysList)
-    {
+<table id="tblRecord" class="table" style="background-color:white;color:black">
+    <thead>
         <tr>
-            <td>
-                @Html.HiddenFor(modelItem => item.SynopsisId)
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CollegeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SynopsisHeader)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SynopsisDescription)
-            </td>
-            <td>
-                @foreach (var files in item.Files)
-                {
-                    @Html.DisplayFor(model => files.FileName)
-                    <a href="@Url.Action("Download", "Synopsis", new { FileId = @files.FileID })">
-                        <img src="~/Images/Download.png" class="downloadIcon" />
-                    </a>
-                    <br />
-                }
-            </td>
-            <td>
-                @if (item.UserId == Model.LoginUserId)
-                {
-                    <div class="button">
-                        <input value="Edit" class="btn" type="button" onclick="EditSynopsisDetails('@item.SynopsisId')" />
-                    </div>
-                }
-            </td>
+            <th><span>Sr. No.</span></th>
+            <th>
+                <span>Student</span>
+            </th>
+            <th>
+                <span>College</span>
+            </th>
+            <th>
+                <span>Category</span>
+            </th>
+            <th>
+                <span>Projet Name</span>
+            </th>
+            <th>
+                <span>Problem Statement</span>
+            </th>
+            <th>
+                <span>Files</span>
+            </th>
+            <th>Action</th>
         </tr>
-    }
+    </thead>
+    <tbody class="tbody">
+        @foreach (var item in Model.SynopsysList)
+        {
+            <tr>
+                <td>
+                    @Html.HiddenFor(modelItem => item.SynopsisId)
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CollegeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SynopsisHeader)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SynopsisDescription)
+                </td>
+                <td>
+                    @foreach (var files in item.Files)
+                    {
+                        @Html.DisplayFor(model => files.FileName)
+                        <a href="@Url.Action("Download", "Synopsis", new { FileId = @files.FileID })">
+                            <img src="~/Images/Download.png" class="downloadIcon" />
+                        </a>
+                        <br />
+                    }
+                </td>
+                <td>
+                    @if (item.UserId == Model.LoginUserId)
+                    {
+                        <div class="button">
+                            <input value="Edit" class="btn" type="button" onclick="EditSynopsisDetails('@item.SynopsisId')" />
+                        </div>
+                    }
+                </td>
+            </tr>
+        }
 
+    </tbody>
 </table>
-<div class="btnDiv">
-    <a href="@Url.Action("Index", "Home", new { Id=Model.LoginUserId})" class="btn btn-info"><span>Home</span></a>
-</div>
+<div id='Paging' style="text-align:center">
+    Page @(Model.SynopsysList.PageCount < Model.SynopsysList.PageNumber ? 0 : Model.SynopsysList.PageNumber)
+    of @Model.SynopsysList.PageCount
 
+    @Html.PagedListPager(Model.SynopsysList, page => Url.Action("ViewFiles", "Synopsis", new { ID = Model.LoginUserId, page = page }))
+</div>
+<div class="btnDiv">
+    <a href="@Url.Action("Home/Index", "Home", new { Id=Model.LoginUserId})" class="btn btn-info"><span>Home</span></a>
+</div>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        //tostr.success("me1");
+
     });
+
+    //function Search() {
+    //    var objSearch = new Object();
+    //    objSearch.UserId = $("#LoginUserId").val();
+    //    objSearch.UserName = $("#UserName").val();
+    //    objSearch.CollegeID = $("#College").val();
+    //    objSearch.CategoryId = $("#Category").val();
+    //    objSearch.SynopsisHeader = $("#SynopsisHeader").val();
+    //    objSearch.SynopsisDescription = $("#SynopsisDescription").val();
+
+    //    var data = JSON.stringify({ objSearch: objSearch });
+    //    debugger;
+    //    $.ajax({
+    //        url: "/Synopsis/ViewFiles/" + $("#LoginUserId").val() + "?page=" + 1,
+    //        type: "POST",
+    //        data: data,
+    //        contentType: "application/json;charset=utf-8",
+    //        dataType: "json",
+    //        success: function (result) {
+    //            alert("1");
+    //            debugger;
+    //            DisplayData(result.data);
+    //        },
+    //        error: function (errormessage) {
+    //            alert(errormessage.responseText);
+    //        }
+    //    });
+    //}
+
+    ////Load Data function
+    //function loadData() {
+    //    debugger;
+    //    $.ajax({
+    //        url: "/Synopsis/ViewFiles/" + $("#LoginUserId").val(),
+    //        type: "POST",
+    //        contentType: "application/json;charset=utf-8",
+    //        dataType: "json",
+    //        success: function (result) {
+    //            alert("1");
+    //            debugger;
+    //            DisplayData(result.data);
+    //        },
+    //        error: function (errormessage) {
+    //            alert(errormessage.responseText);
+    //        }
+    //    });
+    //}
+
+    //function DisplayData(data) {
+    //    var html = '';
+    //    $.each(data, function (key, item) {
+    //        html += '<tr>';
+    //        html += '<td>' + item.Index + '</td>';
+    //        html += '<td>' + item.UserName + '</td>';
+    //        html += '<td>' + item.CollegeName + '</td>';
+    //        html += '<td>' + item.CategoryName + '</td>';
+    //        html += '<td>' + item.SynopsisHeader + '</td>';
+    //        html += '<td>' + item.SynopsisDescription + '</td>';
+    //        html +=
+    //            '<td>' + $.each(result.data.Files, function (filekey, file) {
+    //                '<span>' +
+    //                    file.FileName
+    //                    + '</span>'
+    //                '<a href="Synopsis/Download/' + file.FileID + '/"" >< img src = "~/Images/Download.png"" class="downloadIcon" /></a> '
+    //                    + '</td>';
+    //                html += '<td>' +
+    //                        if(item.UserId == data.LoginUserId) {
+    //                    ' <input value="Edit" class="btn" type="button" onclick="EditSynopsisDetails(' + item.SynopsisId + ')" />'
+    //                }
+    //                +'</td >';
+    //                html += '</tr>';
+    //            });
+    //        $('.tbody').html(html);
+    //    }
+    //}
+
 
     function EditSynopsisDetails(SynopsisId) {
 
-        var objSynopsis = new Object();
-        objSynopsis.UserId = parseInt($("#LoginUserId").val());
-        objSynopsis.SynopsisId = parseInt(SynopsisId);
-        var data = JSON.stringify({ objSynopsis: objSynopsis });
+                var objSynopsis = new Object();
+                objSynopsis.UserId = parseInt($("#LoginUserId").val());
+                objSynopsis.SynopsisId = parseInt(SynopsisId);
+                var data = JSON.stringify({ objSynopsis: objSynopsis });
 
-        $.ajax({
-            url: "/Synopsis/EditSynopsisDetails",
-            type: "POST",
-            data: data,
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            success: function (result) {
-                if (result.IsValid) {
-                    toastr.success(result.ResultMessage);
-                }
-                else {
-                    toastr.error(result.ResultMessage)
-                }
-            },
-            error: function (errormessage) {
-                toastr.error("Error");
+                $.ajax({
+                    url: "/Synopsis/EditSynopsisDetails",
+                    type: "POST",
+                    data: data,
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.IsValid) {
+                            toastr.success(result.ResultMessage);
+                        }
+                        else {
+                            toastr.error(result.ResultMessage)
+                        }
+                    },
+                    error: function (errormessage) {
+                        toastr.error("Error");
+                    }
+                });
             }
-        });
-    }
+
+
 </script>
+
+

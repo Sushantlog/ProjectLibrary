@@ -12,11 +12,11 @@
 
         <div class="input-box">
             <i class='bx bxs-envelope'></i>
-            @Html.DropDownList("College", (IEnumerable<SelectListItem>)ViewData["College"])
+            @Html.DropDownList("College", (IEnumerable<SelectListItem>)ViewData["College"],"--Select--")
         </div>
         <div class="input-box">
             <i class='bx bxs-lock-alt'></i>
-            @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewData["Category"])
+            @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewData["Category"], "--Select--")
         </div>
 
         <div class="input-box">
@@ -90,6 +90,12 @@
             processData: false, // Not to process data  
             success: function (result) {
                 if (result.IsValid) {
+                    $("#UserId").val(0);
+                    $("#College").val(0);
+                    $("#Category").val(0);
+                    $("#SynopsisHeader").val('');
+                    $("#SynopsisDescription").val('');
+                    $("#files").val('');
                     toastr.success(result.ResultMessage);
                     setTimeout(
                         window.location.href = result.redirectToUrl
