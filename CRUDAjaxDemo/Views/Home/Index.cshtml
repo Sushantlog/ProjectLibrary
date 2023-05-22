@@ -232,7 +232,7 @@
                     <p>Help & Support</p>
                     <span>></span>
                 </a>
-                <a href="#" class="sub-menu-link">
+                <a href="@Url.Action("LogOut","Login")" class="sub-menu-link">
                     <img src="images/logout.png" alt="">
                     <p>Logout</p>
                     <span>></span>
@@ -244,8 +244,9 @@
 <div class="button">
     <a href="@Url.Action("Index","Synopsis",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>upload</span></a>
     <a href="@Url.Action("ViewFiles","Synopsis",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>view</span></a>
-    <a href="#" class="first" style="--clr:#1e9bff"><span>Profile</span></a>
-    <a href="#" class="first" style="--clr:#1e9bff"><span>comment</span></a>
+    <a href="@Url.Action("SearchProject","Synopsis",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>Search</span></a>
+    <a href="@Url.Action("Profile","Registration",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>Profile</span></a>
+    <a href="@Url.Action("Index","comment",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>comment</span></a>
 </div>
 
 

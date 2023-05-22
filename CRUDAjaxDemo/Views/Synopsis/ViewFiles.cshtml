@@ -154,6 +154,9 @@
         {
             <tr>
                 <td>
+                @Html.DisplayFor(modelItem => item.Index)
+            </td>
+                <td>
                     @Html.HiddenFor(modelItem => item.SynopsisId)
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
@@ -199,7 +202,7 @@
     @Html.PagedListPager(Model.SynopsysList, page => Url.Action("ViewFiles", "Synopsis", new { ID = Model.LoginUserId, page = page }))
 </div>
 <div class="btnDiv">
-    <a href="@Url.Action("Home/Index", "Home", new { Id=Model.LoginUserId})" class="btn btn-info"><span>Home</span></a>
+    <a href="@Url.Action("Index", "Home", new { Id=Model.LoginUserId})" class="btn btn-info"><span>Home</span></a>
 </div>
 
 <script type="text/javascript">

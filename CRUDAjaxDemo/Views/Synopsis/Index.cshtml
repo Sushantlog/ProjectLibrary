@@ -3,6 +3,18 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .btnDiv {
+        text-align: right;
+        padding: 10px;
+        top: 0px !important;
+        position: absolute;
+        width: 100%;
+    }
+</style>
+<div class="btnDiv">
+    <a href="@Url.Action("Index", "Home", new { Id=Model.UserId})" class="btn btn-info"><span>Home</span></a>
+</div>
 <div class="form-box">
     @using (Html.BeginForm())
     {
@@ -36,6 +48,7 @@
         </div>
     }
 </div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         //tostr.success("me1");

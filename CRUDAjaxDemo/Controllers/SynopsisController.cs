@@ -162,5 +162,94 @@ namespace CRUDAjaxDemo.Controllers
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, FileDetails.FileName);
 
         }
+        public ActionResult SearchProject(int Id)
+        {
+            if (Session["UserID"] != null && Session["UserID"].ToString() != Id.ToString())
+            {
+                return RedirectToAction("Index", "login");
+            }
+            ProjectLibraryEntities std = new ProjectLibraryEntities();
+
+            var categoryMaster = new SelectList(std.tbl_CategoryMaster.ToList(), "CategoryID", "CategoryName");
+            ViewData["Category"] = categoryMaster;
+
+            var collegeMaster = new SelectList(std.tbl_CollegeMaster.ToList(), "CollegeID", "CollegeName");
+            ViewData["College"] = collegeMaster;
+            SearchSynopsysModel FileList = new SearchSynopsysModel();
+            FileList.LoginUserId = Id;
+            return View(FileList);
+
+        }
+
+        [HttpPost]
+        public ActionResult SearchFiles(int Id, SearchModel ObjSearch)
+        {
+            if (Session["UserID"] != null && Session["UserID"].ToString() != Id.ToString())
+            {
+                return RedirectToAction("Index", "login");
+            }
+            ProjectLibraryEntities std = new ProjectLibraryEntities();
+
+            var categoryMaster = new SelectList(std.tbl_CategoryMaster.ToList(), "CategoryID", "CategoryName");
+            ViewData["Category"] = categoryMaster;
+
+            var collegeMaster = new SelectList(std.tbl_CollegeMaster.ToList(), "CollegeID", "CollegeName");
+            ViewData["College"] = collegeMaster;
+            SearchSynopsysModel FileList = new SearchSynopsysModel();
+            FileList.LoginUserId = Id;
+            List<SynopsisModel> synopsysList = null;
+
+            List<tbl_SynopsisDetails> filteredList = new List<tbl_SynopsisDetails>();
+            if (ObjSearch.CategoryId > 0)
+            {
+                var searchedList = std.tbl_SynopsisDetails.Where(m => m.CategoryID == ObjSearch.CategoryId).ToList();
+                filteredList.AddRange(searchedList);
+            }
+            if (ObjSearch.CollegeID > 0)
+            {
+                var searchedList = std.tbl_SynopsisDetails.Where(m => m.CollegeID == ObjSearch.CollegeID).ToList();
+                filteredList.AddRange(searchedList);
+            }
+            if (!string.IsNullOrEmpty(ObjSearch.UserName))
+            {
+                var UserIds=std.tbl_Registration.Where(m => m.UserName.ToLower().Contains(ObjSearch.UserName.ToLower())).Select(m=>m.UserID).ToList();
+                var searchedList = std.tbl_SynopsisDetails.Where(m => UserIds.Contains((int)m.UserID)).ToList();
+                filteredList.AddRange(searchedList);
+            }
+            if (!string.IsNullOrEmpty(ObjSearch.SynopsisHeader))
+            {
+                var searchedList = std.tbl_SynopsisDetails.Where(m => m.SynopsisHeader.ToLower().Contains(ObjSearch.SynopsisHeader.ToLower())).ToList();
+                filteredList.AddRange(searchedList);
+            }
+            if (!string.IsNullOrEmpty(ObjSearch.SynopsisDescription))
+            {
+                var searchedList = std.tbl_SynopsisDetails.Where(m => m.SynopsisDescription.ToLower().Contains(ObjSearch.SynopsisDescription.ToLower())).ToList();
+                filteredList.AddRange(searchedList);
+            }
+
+            FileList.SynopsysList = filteredList.AsEnumerable().Select((m, i) => new SynopsisModel()
+            {
+                Index = i + 1,
+                SynopsisId = m.SynopsisID,
+                UserId = m.UserID,
+                CategoryId = m.CategoryID,
+                CollegeId = m.CategoryID,
+
+                UserName = m.tbl_Registration.UserName,
+                CategoryName = m.tbl_CategoryMaster.CategoryName,
+                CollegeName = m.tbl_CollegeMaster.CollegeName,
+
+                SynopsisHeader = m.SynopsisHeader,
+                SynopsisDescription = m.SynopsisDescription,
+                Files = m.tbl_FilesDetails.AsEnumerable().Select(n => new FilesViewModel()
+                {
+                    FileID = n.FileID,
+                    SynopsisID = n.SynopsisID,
+                    FileName = n.FileName,
+                    FilePath = n.FilePath
+                }).ToList()
+            }).ToList();
+            return Json(new { Data = FileList }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

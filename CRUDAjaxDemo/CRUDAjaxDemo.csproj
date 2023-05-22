@@ -205,6 +205,8 @@
     <Content Include="Views\Synopsis\Index.cshtml" />
     <Content Include="Views\Owner\Index.cshtml" />
     <Content Include="Views\Synopsis\ViewFiles.cshtml" />
+    <Content Include="Views\Synopsis\SearchFiles.cshtml" />
+    <Content Include="Views\Synopsis\SearchProject.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

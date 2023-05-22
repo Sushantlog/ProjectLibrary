@@ -1,0 +1,234 @@
+﻿@model CRUDAjaxDemo.ViewModels.SearchSynopsysModel
+@{
+    ViewBag.Title = "SearchProject";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    body {
+        padding-top: 0px !important;
+        padding-bottom: 20px;
+    }
+
+    .container {
+        display: block !important;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        max-width: 100% !important;
+        padding: 0px !important;
+    }
+
+    .downloadIcon {
+        height: 20px;
+    }
+
+    .header {
+        background-color: white;
+        color: black;
+        min-height: 70px !important;
+        align-items: center;
+        text-align: center;
+    }
+
+    .table {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        .table td, .table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .table tr:hover {
+            background-color: #ddd;
+        }
+
+        .table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+
+    .headerText {
+        padding-top: 15px;
+    }
+
+    .btnDiv {
+        text-align: right;
+        padding: 10px;
+    }
+
+    #Paging {
+        color: white;
+    }
+
+    .pagination-container .pagination li {
+        padding: 10px;
+        border: 1px solid gray;
+        font-size: 25px;
+        background-color: darkgray;
+    }
+
+    .pagination-container {
+        align-items: center
+    }
+
+
+    .Pager span {
+        text-align: center;
+        color: #333;
+        display: inline-block;
+        width: 20px;
+        background-color: #B8DBFD;
+        margin-right: 3px;
+        line-height: 150%;
+        border: 1px solid #B8DBFD;
+    }
+
+    .Pager a {
+        text-align: center;
+        display: inline-block;
+        width: 20px;
+        background-color: #ccc;
+        color: #333;
+        border: 1px solid #ccc;
+        margin-right: 3px;
+        line-height: 150%;
+        text-decoration: none;
+    }
+
+    .SearchBox {
+        color: black;
+        display: flex;
+        background-color: aqua;
+        padding: 5px;
+        align-items: flex-end;
+    }
+
+        .SearchBox input, select {
+            width: 50%
+        }
+</style>
+<div class="header">
+    <h2 class="headerText">Search Project</h2>
+    @Html.HiddenFor(m => m.LoginUserId)
+</div>
+<div class="SearchBox">
+    <div style="width:20%">
+        <span>Student Name: </span>
+        @Html.TextBox("UserName", null, new { @placeholder = "UserName", onchange = "Search();" })
+    </div>
+    <div style="width: 18%">
+        <span>College: </span>
+        @Html.DropDownList("College", (IEnumerable<SelectListItem>)ViewData["College"], "--Select--", new { onchange = "Search();" })
+    </div>
+    <div style="width:18%">
+        <span>Category: </span>
+        @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewData["Category"], "--Select--", new { onchange = "Search();" })
+    </div>
+    <div style="width:20%">
+        <span>Project Name:  </span>
+        @Html.TextBox("SynopsisHeader", null, new { @placeholder = "Project Name ", onchange = "Search();" })
+    </div>
+    <div style="width:24%">
+        <span>Problem Statment: </span>
+        @Html.TextBox("SynopsisDescription", null, new { @placeholder = "Problem Statment", onchange = "Search();" })
+    </div>
+</div>
+<table id="tblRecord" class="table" style="background-color:white;color:black">
+    <thead>
+        <tr>
+            <th><span>Sr. No.</span></th>
+            <th>
+                <span>Student</span>
+            </th>
+            <th>
+                <span>College</span>
+            </th>
+            <th>
+                <span>Category</span>
+            </th>
+            <th>
+                <span>Projet Name</span>
+            </th>
+            <th>
+                <span>Problem Statement</span>
+            </th>
+            <th>
+                <span>Files</span>
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+
+    function Search() {
+        var objSearch = new Object();
+        objSearch.UserId = $("#LoginUserId").val();
+        objSearch.UserName = $("#UserName").val();
+        objSearch.CollegeID = $("#College").val();
+        objSearch.CategoryId = $("#Category").val();
+        objSearch.SynopsisHeader = $("#SynopsisHeader").val();
+        objSearch.SynopsisDescription = $("#SynopsisDescription").val();
+
+        var data = JSON.stringify({ objSearch: objSearch });
+        $.ajax({
+            url: "/Synopsis/SearchFiles/" + $("#LoginUserId").val(),
+            type: "POST",
+            data: data,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                DisplayData(result.Data.SynopsysList);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function DisplayData(data) {
+        var html = '';
+        debugger;
+        $.each(data, function (key, item) {
+            html += '<tr>';
+            html += '<td>' + item.Index + '</td>';
+            html += '<td>' + item.UserName + '</td>';
+            html += '<td>' + item.CollegeName + '</td>';
+            html += '<td>' + item.CategoryName + '</td>';
+            html += '<td>' + item.SynopsisHeader + '</td>';
+            html += '<td>' + item.SynopsisDescription + '</td>';
+            //html +=
+            //    '<td>' + $.each(data.synopsysList.Files, function (filekey, file) {
+            //        '<span>' +
+            //            file.FileName
+            //            + '</span>'
+            //        '<a href="Synopsis/Download/' + file.FileID + '/"" >< img src = "~/Images/Download.png"" class="downloadIcon" /></a> '
+            //            + '</td>';
+            //        html += '<td>' +
+            //                if (item.UserId == data.LoginUserId) {
+            //            ' <input value="Edit" class="btn" type="button" onclick="EditSynopsisDetails(' + item.SynopsisId + ')" />'
+            //        }
+            //        +'</td >';
+            html += '</tr>';
+        });
+        $('.tbody').html(html);
+    }
+
+</script>

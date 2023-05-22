@@ -25,7 +25,6 @@ namespace CRUDAjaxDemo.ViewModels
 
         public List<FilesViewModel> Files { get; set; }
     }
-
     public class FilesListModel
     {
         public int LoginUserId { get; set; }
@@ -37,7 +36,6 @@ namespace CRUDAjaxDemo.ViewModels
         public int PageNumber { get; set; }
 
     }
-
     public class EditSynopsisModel
     {
         public int UserId { get; set; }
@@ -52,5 +50,10 @@ namespace CRUDAjaxDemo.ViewModels
         public int? CollegeID { get; set; }
         public string SynopsisHeader { get; set; }
         public string SynopsisDescription { get; set; }
+    }
+    public class SearchSynopsysModel
+    {
+        public int LoginUserId { get; set; }
+        public List<SynopsisModel> SynopsysList { get; set; }
     }
 }

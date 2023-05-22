@@ -67,7 +67,7 @@ namespace CRUDAjaxDemo.Controllers
                 return Json(new { IsValid = isValid, ResultMessage = resultMessage, Id = id }, JsonRequestBehavior.AllowGet);
             }
             ;
-            
+
         }
 
         // GET: 
@@ -155,8 +155,8 @@ namespace CRUDAjaxDemo.Controllers
             if (std.tbl_Registration.Any(m => m.Email == objOTP.Email))
             {
                 var UserDetails = std.tbl_Registration.Where(m => m.Email == objOTP.Email).FirstOrDefault();
-                var OTPDetails = std.tbl_OTP.Where(m => m.UserID == UserDetails.UserID).OrderByDescending(m=>m.OTPID).FirstOrDefault();
-                if (OTPDetails !=null && OTPDetails.OTP == objOTP.OTP)
+                var OTPDetails = std.tbl_OTP.Where(m => m.UserID == UserDetails.UserID).OrderByDescending(m => m.OTPID).FirstOrDefault();
+                if (OTPDetails != null && OTPDetails.OTP == objOTP.OTP)
                 {
                     isValid = true;
                     resultMessage = "Correct OTP";
@@ -216,5 +216,10 @@ namespace CRUDAjaxDemo.Controllers
             return Json(new { IsValid = isValid, ResultMessage = resultMessage, Id = id }, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult LogOut()
+        {
+            Session["UserID"] = null;
+            return RedirectToAction("Index", "Login");
+        }
     }
 }
