@@ -207,6 +207,21 @@
         var html = '';
         debugger;
         $.each(data, function (key, item) {
+            var files = item.Files;
+            var fileHtml = '';
+            for (var i = 0; i < files.length; i++) {
+                fileHtml += '<span>' + files[i].FileName + '</span>';
+                fileHtml += '<a href="Synopsis/Download/' + files[i].FileID + '"" >';
+                fileHtml += '<img src = "../../Images/Download.png"" class="downloadIcon" />';
+                fileHtml += '</a>';
+                fileHtml += '</br>';
+            }
+
+            var editButton = ''
+            if (item.UserId == $("#LoginUserId").val()) {
+                editButton = '<input id="EditBtn" value="Edit" class="btn" type="button" onclick="EditSynopsisDetails(' + item.SynopsisId + ')" />';
+            }
+
             html += '<tr>';
             html += '<td>' + item.Index + '</td>';
             html += '<td>' + item.UserName + '</td>';
@@ -214,18 +229,8 @@
             html += '<td>' + item.CategoryName + '</td>';
             html += '<td>' + item.SynopsisHeader + '</td>';
             html += '<td>' + item.SynopsisDescription + '</td>';
-            //html +=
-            //    '<td>' + $.each(data.synopsysList.Files, function (filekey, file) {
-            //        '<span>' +
-            //            file.FileName
-            //            + '</span>'
-            //        '<a href="Synopsis/Download/' + file.FileID + '/"" >< img src = "~/Images/Download.png"" class="downloadIcon" /></a> '
-            //            + '</td>';
-            //        html += '<td>' +
-            //                if (item.UserId == data.LoginUserId) {
-            //            ' <input value="Edit" class="btn" type="button" onclick="EditSynopsisDetails(' + item.SynopsisId + ')" />'
-            //        }
-            //        +'</td >';
+            html += '<td>' + fileHtml + '</td>';
+            html += '<td>' + editButton + '</td >';
             html += '</tr>';
         });
         $('.tbody').html(html);
