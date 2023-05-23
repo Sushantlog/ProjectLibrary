@@ -13,7 +13,7 @@ namespace CRUDAjaxDemo.Controllers
         // GET: Home
         public ActionResult Index(int Id)
         {
-            if (Session["UserID"] !=null && Session["UserID"].ToString() != Id.ToString())
+            if (Session["UserID"] != null && Session["UserID"].ToString() != Id.ToString())
             {
                 return RedirectToAction("Index", "login");
             }
@@ -26,6 +26,12 @@ namespace CRUDAjaxDemo.Controllers
             homeViewModel.UserId = UserDetails.UserID;
             homeViewModel.UserName = UserDetails.UserName;
 
+            CounterModel objCounter = new CounterModel();
+            objCounter.TotalUsers = std.tbl_Registration.Count();
+            objCounter.TotalFiles = std.tbl_FilesDetails.Count();
+            objCounter.TotalProjects = std.tbl_SynopsisDetails.Count();
+            objCounter.TotalActiveUsers = std.tbl_SynopsisDetails.Select(m => m.UserID).Distinct().Count();
+            homeViewModel.counter = objCounter;
             return View(homeViewModel);
         }
     }

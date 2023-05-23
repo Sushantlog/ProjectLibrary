@@ -45,7 +45,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
+        min-height: 75vh;
         background: black;
         flex-direction: none;
         gap: 50px;
@@ -195,6 +195,12 @@
         .sub-menu-link:hover p {
             font-weight: 600;
         }
+
+    .counter {
+        border-bottom: 1px solid;
+        background-color: black;
+        color: white;
+    }
 </style>
 
 @*@Html.ActionLink("Login", "Index", "Login", null, new { @class = "btn btn-primary btn-large" })*@
@@ -241,11 +247,48 @@
         </div>
     </nav>
 </div>
+<div class="counter">
+    <div class="row text-center">
+        <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+            <div class="js-counter h1 mb-1"
+                 data-hs-counter-options='{
+           "isCommaSeparated": true
+         }'>@Model.counter.TotalProjects</div>
+            <span>Total Projects</span>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+            <div class="js-counter h1 mb-1"
+                 data-hs-counter-options='{
+           "isCommaSeparated": true
+         }'>@Model.counter.TotalUsers</div>
+            <span>Total Users</span>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+            <div class="js-counter h1 mb-1"
+                 data-hs-counter-options='{
+           "isCommaSeparated": true
+         }'>@Model.counter.TotalFiles</div>
+            <span>Total Files </span>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+            <div class="js-counter h1 mb-1"
+                 data-hs-counter-options='{
+           "isCommaSeparated": true
+         }'>@Model.counter.TotalActiveUsers</div>
+            <span>Total Active Users</span>
+        </div>
+    </div>
+    <!-- End Row -->
+
+</div>
 <div class="button">
     <a href="@Url.Action("Index","Synopsis",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>upload</span></a>
     <a href="@Url.Action("ViewFiles","Synopsis",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>view</span></a>
     <a href="@Url.Action("SearchProject","Synopsis",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>Search</span></a>
-    <a href="@Url.Action("Profile","Registration",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>Profile</span></a>
+    <a href="@Url.Action("UserProfile","Registration",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>Profile</span></a>
     <a href="@Url.Action("Index","comment",new { ID = Model.UserId })" class="first" style="--clr:#1e9bff"><span>comment</span></a>
 </div>
 

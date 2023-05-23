@@ -1,0 +1,60 @@
+﻿@model CRUDAjaxDemo.ViewModels.ProfileViewModel
+@{
+    ViewBag.Title = "UserProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .container {
+        display: flex;
+    }
+
+    .tblInfo {
+        margin-left: auto;
+        margin-right: auto;
+        background-color: white;
+    }
+
+    .btnDiv {
+        width: 100%;
+        text-align: right;
+        padding: 10px;
+        top: 0 !important;
+        position: absolute;
+    }
+</style>
+<div class="container">
+    <div class="table">
+        @Html.HiddenFor(model => model.UserId)
+        <table class="tblInfo" style="border:1">
+            <tr>
+                <td>
+                    User Name :
+                </td>
+                <td>
+                    <div class="input-box">
+                        @Html.DisplayFor(model => model.UserName)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Email : </td>
+                <td>
+                    <div class="input-box">
+                        @Html.DisplayFor(model => model.Email, new { @placeholder = "Email" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="button">
+                        <a href="@Url.Action("EditUserProfile", "Registration", new { Id=Model.UserId})" class="btn btn-info"><span>Edit</span></a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="btnDiv">
+    <a href="@Url.Action("Index", "Home", new { Id=Model.UserId})" class="btn btn-info"><span>Home</span></a>
+</div>
