@@ -227,7 +227,7 @@ namespace CRUDAjaxDemo.Controllers
                 filteredList.AddRange(searchedList);
             }
 
-            FileList.SynopsysList = filteredList.AsEnumerable().Select((m, i) => new SynopsisModel()
+            FileList.SynopsysList = filteredList.Distinct().AsEnumerable().Select((m, i) => new SynopsisModel()
             {
                 Index = i + 1,
                 SynopsisId = m.SynopsisID,
