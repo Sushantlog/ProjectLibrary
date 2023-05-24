@@ -25,28 +25,29 @@ namespace CRUDAjaxDemo.Controllers
         [HttpPost]
         public ActionResult Save(RegisterViewModel objRegister)
         {
-            ProjectLibraryEntities std = new ProjectLibraryEntities();
-            // Validation
-            //check username/email/password are unique if duplicate found send error
-
-            tbl_Registration tblRegistration = new tbl_Registration();
-            tblRegistration.UserName = objRegister.UserName;
-            tblRegistration.Email = objRegister.Email;
-            tblRegistration.Password = objRegister.Password;
-
-            std.tbl_Registration.Add(tblRegistration);
-            std.SaveChanges();
-
-            var redirectToUrl = Url.Action("Index", "Login");
-
-            return Json(new
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                IsValid = true,
-                ResultMessage = "Registered Successfully",
-                Id = tblRegistration.UserID,
-                RedirectToUrl = redirectToUrl
-            }, JsonRequestBehavior.AllowGet);
+                // Validation
+                //check username/email/password are unique if duplicate found send error
 
+                tbl_Registration tblRegistration = new tbl_Registration();
+                tblRegistration.UserName = objRegister.UserName;
+                tblRegistration.Email = objRegister.Email;
+                tblRegistration.Password = objRegister.Password;
+
+                std.tbl_Registration.Add(tblRegistration);
+                std.SaveChanges();
+
+                var redirectToUrl = Url.Action("Index", "Login");
+
+                return Json(new
+                {
+                    IsValid = true,
+                    ResultMessage = "Registered Successfully",
+                    Id = tblRegistration.UserID,
+                    RedirectToUrl = redirectToUrl
+                }, JsonRequestBehavior.AllowGet);
+            }
         }
 
 
@@ -57,14 +58,16 @@ namespace CRUDAjaxDemo.Controllers
             {
                 return RedirectToAction("Index", "login");
             }
-            ProjectLibraryEntities std = new ProjectLibraryEntities();
-            var UserDetails = std.tbl_Registration.Where(m => m.UserID == Id).Select(m => new ProfileViewModel
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                UserId = m.UserID,
-                UserName = m.UserName,
-                Email = m.Email,
-            }).FirstOrDefault();
-            return View(UserDetails);
+                var UserDetails = std.tbl_Registration.Where(m => m.UserID == Id).Select(m => new ProfileViewModel
+                {
+                    UserId = m.UserID,
+                    UserName = m.UserName,
+                    Email = m.Email,
+                }).FirstOrDefault();
+                return View(UserDetails);
+            }
         }
 
         [HttpGet]
@@ -74,14 +77,16 @@ namespace CRUDAjaxDemo.Controllers
             {
                 return RedirectToAction("Index", "login");
             }
-            ProjectLibraryEntities std = new ProjectLibraryEntities();
-            var UserDetails = std.tbl_Registration.Where(m => m.UserID == Id).Select(m => new ProfileViewModel
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                UserId = m.UserID,
-                UserName = m.UserName,
-                Email = m.Email,
-            }).FirstOrDefault();
-            return View(UserDetails);
+                var UserDetails = std.tbl_Registration.Where(m => m.UserID == Id).Select(m => new ProfileViewModel
+                {
+                    UserId = m.UserID,
+                    UserName = m.UserName,
+                    Email = m.Email,
+                }).FirstOrDefault();
+                return View(UserDetails);
+            }
         }
     }
 }

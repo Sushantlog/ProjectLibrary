@@ -12,13 +12,13 @@ namespace CRUDAjaxDemo.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_FilesDetails
+    public partial class tbl_Comments
     {
-        public int FileID { get; set; }
-        public Nullable<int> SynopsisID { get; set; }
-        public string FileName { get; set; }
-        public string FilePath { get; set; }
+        public int CommentId { get; set; }
+        public Nullable<int> UserID { get; set; }
+        public string CommentHeader { get; set; }
+        public string CommentDescription { get; set; }
     
-        public virtual tbl_SynopsisDetails tbl_SynopsisDetails { get; set; }
+        public virtual tbl_Registration tbl_Registration { get; set; }
     }
 }

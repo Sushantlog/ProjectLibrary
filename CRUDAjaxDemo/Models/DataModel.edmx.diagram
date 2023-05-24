@@ -16,6 +16,8 @@
         <AssociationConnector Association="ProjectLibraryModel.FK__tbl_Files__Synop__3C69FB99" />
         <AssociationConnector Association="ProjectLibraryModel.FK__tbl_OTP__UserID__267ABA7A" />
         <AssociationConnector Association="ProjectLibraryModel.FK__tbl_Synop__UserI__37A5467C" />
+        <EntityTypeShape EntityType="ProjectLibraryModel.tbl_Comments" Width="1.5" PointX="3" PointY="0.75" />
+        <AssociationConnector Association="ProjectLibraryModel.FK__tbl_Comme__UserI__49C3F6B7" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

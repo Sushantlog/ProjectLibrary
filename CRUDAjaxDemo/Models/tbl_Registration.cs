@@ -19,6 +19,7 @@ namespace CRUDAjaxDemo.Models
         {
             this.tbl_OTP = new HashSet<tbl_OTP>();
             this.tbl_SynopsisDetails = new HashSet<tbl_SynopsisDetails>();
+            this.tbl_Comments = new HashSet<tbl_Comments>();
         }
     
         public int UserID { get; set; }
@@ -30,5 +31,7 @@ namespace CRUDAjaxDemo.Models
         public virtual ICollection<tbl_OTP> tbl_OTP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_SynopsisDetails> tbl_SynopsisDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_Comments> tbl_Comments { get; set; }
     }
 }

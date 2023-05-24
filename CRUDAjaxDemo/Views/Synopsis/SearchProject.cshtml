@@ -99,7 +99,7 @@
         text-align: center;
         display: inline-block;
         width: 20px;
-        background-color: #ccc;
+        background-color: #0094ff;
         color: #333;
         border: 1px solid #ccc;
         margin-right: 3px;
@@ -107,6 +107,11 @@
         text-decoration: none;
     }
 
+    .Pager {
+        color: white;
+        width:100%;
+        text-align:center;
+    }
     .SearchBox {
         color: black;
         display: flex;
@@ -126,23 +131,23 @@
 <div class="SearchBox">
     <div style="width:20%">
         <span>Student Name: </span>
-        @Html.TextBox("UserName", null, new { @placeholder = "UserName", onchange = "Search();" })
+        @Html.TextBox("UserName", null, new { @placeholder = "UserName", onchange = "Search(1);" })
     </div>
     <div style="width: 18%">
         <span>College: </span>
-        @Html.DropDownList("College", (IEnumerable<SelectListItem>)ViewData["College"], "--Select--", new { onchange = "Search();" })
+        @Html.DropDownList("College", (IEnumerable<SelectListItem>)ViewData["College"], "--Select--", new { onchange = "Search(1);" })
     </div>
     <div style="width:18%">
         <span>Category: </span>
-        @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewData["Category"], "--Select--", new { onchange = "Search();" })
+        @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewData["Category"], "--Select--", new { onchange = "Search(1);" })
     </div>
     <div style="width:20%">
         <span>Project Name:  </span>
-        @Html.TextBox("SynopsisHeader", null, new { @placeholder = "Project Name ", onchange = "Search();" })
+        @Html.TextBox("SynopsisHeader", null, new { @placeholder = "Project Name ", onchange = "Search(1);" })
     </div>
     <div style="width:24%">
         <span>Problem Statment: </span>
-        @Html.TextBox("SynopsisDescription", null, new { @placeholder = "Problem Statment", onchange = "Search();" })
+        @Html.TextBox("SynopsisDescription", null, new { @placeholder = "Problem Statment", onchange = "Search(1);" })
     </div>
 </div>
 <table id="tblRecord" class="table" style="background-color:white;color:black">
@@ -173,12 +178,19 @@
     <tbody class="tbody">
     </tbody>
 </table>
+<div class="Pager"></div>
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $("#College").val(1);
+        Search(1);
+    });
+    $("body").on("click", ".Pager .page", function () {
+        Search(parseInt($(this).attr('page')));
     });
 
-    function Search() {
+    function Search(pageIndex) {
+        debugger;
         var objSearch = new Object();
         objSearch.UserId = $("#LoginUserId").val();
         objSearch.UserName = $("#UserName").val();
@@ -186,7 +198,7 @@
         objSearch.CategoryId = $("#Category").val();
         objSearch.SynopsisHeader = $("#SynopsisHeader").val();
         objSearch.SynopsisDescription = $("#SynopsisDescription").val();
-
+        objSearch.PageIndex = pageIndex;
         var data = JSON.stringify({ objSearch: objSearch });
         $.ajax({
             url: "/Synopsis/SearchFiles/" + $("#LoginUserId").val(),
@@ -196,6 +208,13 @@
             dataType: "json",
             success: function (result) {
                 DisplayData(result.Data.SynopsysList);
+                $(".Pager").ASPSnippets_Pager({
+                    ActiveCssClass: "current",
+                    PagerCssClass: "pager",
+                    PageIndex: result.Data.PageIndex,
+                    PageSize: result.Data.PageSize,
+                    RecordCount: result.Data.RecordCount
+                });
             },
             error: function (errormessage) {
                 alert(errormessage.responseText);
@@ -205,7 +224,6 @@
 
     function DisplayData(data) {
         var html = '';
-        debugger;
         $.each(data, function (key, item) {
             var files = item.Files;
             var fileHtml = '';
@@ -234,6 +252,7 @@
             html += '</tr>';
         });
         $('.tbody').html(html);
+
     }
 
 </script>

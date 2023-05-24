@@ -50,10 +50,14 @@ namespace CRUDAjaxDemo.ViewModels
         public int? CollegeID { get; set; }
         public string SynopsisHeader { get; set; }
         public string SynopsisDescription { get; set; }
+        public int PageIndex { get; set; }
     }
     public class SearchSynopsysModel
     {
         public int LoginUserId { get; set; }
         public List<SynopsisModel> SynopsysList { get; set; }
+        public int PageIndex { get; set; }
+        public int PageSize { get; set; }
+        public int RecordCount { get; set; }
     }
 }

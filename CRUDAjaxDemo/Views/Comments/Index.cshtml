@@ -1,0 +1,76 @@
+﻿@model CRUDAjaxDemo.ViewModels.CommentsViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="form-box">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <p id="result"></p>
+            @Html.HiddenFor(model => model.UserId)
+            @Html.HiddenFor(model => model.CommentId)
+            <div class="input-box">
+                <i class='bx bxs-user'></i>
+                @Html.TextBoxFor(model => model.CommentHeader, new { @placeholder = "Header" })
+            </div>
+            <div class="input-box">
+                <i class='bx bxs-envelope'></i>
+                @Html.TextBoxFor(model => model.CommentDescription, new { @placeholder = "Description" })
+            </div>
+            <div class="button">
+                <input value="Save" class="btn" type="button" onclick="Save()" />
+            </div>
+        }
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //tostr.success("me1");
+    });
+
+    function Save() {
+
+        if ($("#CommentHeader").val() == undefined || $("#CommentHeader").val() == '') {
+            toastr.error("Please enter header");
+            return;
+        }
+
+        if ($("#CommentDescription").val() == undefined || $("#CommentDescription").val() == '') {
+            toastr.error("Please enter description");
+            return;
+        }
+
+        var objComment = new Object();
+        objComment.UserId = $("#UserId").val();
+        objComment.CommentHeader = $("#CommentHeader").val();
+        objComment.CommentDescription = $("#CommentDescription").val();
+
+        var data = JSON.stringify({ objComment: objComment });
+        $.ajax({
+            url: "/Comments/SaveComments",
+            type: "POST",
+            data: data,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result.IsValid) {
+                    toastr.success(result.ResultMessage);
+                    $("#CommentId").val(result.CommentId);
+                }
+                else {
+                    toastr.error(result.ResultMessage)
+                }
+            },
+            error: function (errormessage) {
+                toastr.error("Error");
+            }
+        });
+    }
+
+</script>
+

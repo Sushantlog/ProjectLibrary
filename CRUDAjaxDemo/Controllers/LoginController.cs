@@ -82,52 +82,48 @@ namespace CRUDAjaxDemo.Controllers
         {
             try
             {
-                ProjectLibraryEntities std = new ProjectLibraryEntities();
-                var UserDetails = std.tbl_Registration.Where(m => m.Email == objLogin.Email).FirstOrDefault();
-                var OTP = GenerateRandomNo().ToString();
-                if (UserDetails != null)
+                using (ProjectLibraryEntities std = new ProjectLibraryEntities())
                 {
-                    tbl_OTP tbl_OTP = new tbl_OTP();
-                    tbl_OTP.UserID = UserDetails.UserID;
-                    tbl_OTP.OTP = OTP;
-                    std.tbl_OTP.Add(tbl_OTP);
-                    std.SaveChanges();
-                }
-                try
-                {
-                    //eqeemquxqoaphqus
-
-                    string username = "TestAppSushant2023@Gmail.com";
-                    string password = "eqeemquxqoaphqus";
-                    ICredentialsByHost credentials = new NetworkCredential(username, password);
-
-                    SmtpClient smtpClient = new SmtpClient()
+                    var UserDetails = std.tbl_Registration.Where(m => m.Email == objLogin.Email).FirstOrDefault();
+                    var OTP = GenerateRandomNo().ToString();
+                    if (UserDetails != null)
                     {
-                        Host = "smtp.gmail.com",
-                        Port = 587,
-                        EnableSsl = true,
-                        Credentials = credentials
-                    };
+                        tbl_OTP tbl_OTP = new tbl_OTP();
+                        tbl_OTP.UserID = UserDetails.UserID;
+                        tbl_OTP.OTP = OTP;
+                        std.tbl_OTP.Add(tbl_OTP);
+                        std.SaveChanges();
+                    }
+                    try
+                    {
+                        string username = "TestAppSushant2023@Gmail.com";
+                        string password = "eqeemquxqoaphqus";
+                        ICredentialsByHost credentials = new NetworkCredential(username, password);
 
-                    MailMessage mail = new MailMessage();
-                    mail.From = new MailAddress(username);
-                    mail.To.Add(objLogin.Email);
-                    mail.Subject = "OTP";
-                    string Body = OTP;
-                    mail.Body = Body;
+                        SmtpClient smtpClient = new SmtpClient()
+                        {
+                            Host = "smtp.gmail.com",
+                            Port = 587,
+                            EnableSsl = true,
+                            Credentials = credentials
+                        };
 
-                    smtpClient.Send(mail);
+                        MailMessage mail = new MailMessage();
+                        mail.From = new MailAddress(username);
+                        mail.To.Add(objLogin.Email);
+                        mail.Subject = "OTP";
+                        string Body = OTP;
+                        mail.Body = Body;
+
+                        smtpClient.Send(mail);
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw ex;
+                    }
+                    return Json(new { IsValid = true, ResultMessage = "Send OTP on email " + objLogin.Email }, JsonRequestBehavior.AllowGet);
                 }
-                catch (Exception ex)
-                {
-
-                    throw ex;
-                }
-
-
-
-
-                return Json(new { IsValid = true, ResultMessage = "Send OTP on email " + objLogin.Email }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -147,75 +143,78 @@ namespace CRUDAjaxDemo.Controllers
         // post: Login
         public JsonResult ValidateOTP(LoginViewModel objOTP)
         {
-            ProjectLibraryEntities std = new ProjectLibraryEntities();
-            var resultMessage = string.Empty;
-            var isValid = false;
-            var id = 0;
-
-            if (std.tbl_Registration.Any(m => m.Email == objOTP.Email))
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                var UserDetails = std.tbl_Registration.Where(m => m.Email == objOTP.Email).FirstOrDefault();
-                var OTPDetails = std.tbl_OTP.Where(m => m.UserID == UserDetails.UserID).OrderByDescending(m => m.OTPID).FirstOrDefault();
-                if (OTPDetails != null && OTPDetails.OTP == objOTP.OTP)
+                var resultMessage = string.Empty;
+                var isValid = false;
+                var id = 0;
+
+                if (std.tbl_Registration.Any(m => m.Email == objOTP.Email))
                 {
-                    isValid = true;
-                    resultMessage = "Correct OTP";
-                    id = (int)(OTPDetails?.UserID);
-                    return Json(
-                    new
+                    var UserDetails = std.tbl_Registration.Where(m => m.Email == objOTP.Email).FirstOrDefault();
+                    var OTPDetails = std.tbl_OTP.Where(m => m.UserID == UserDetails.UserID).OrderByDescending(m => m.OTPID).FirstOrDefault();
+                    if (OTPDetails != null && OTPDetails.OTP == objOTP.OTP)
                     {
-                        IsValid = isValid,
-                        ResultMessage = resultMessage,
-                        Id = id,
-                    }, JsonRequestBehavior.AllowGet);
+                        isValid = true;
+                        resultMessage = "Correct OTP";
+                        id = (int)(OTPDetails?.UserID);
+                        return Json(
+                        new
+                        {
+                            IsValid = isValid,
+                            ResultMessage = resultMessage,
+                            Id = id,
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        isValid = false;
+                        resultMessage = "Invalid OTP";
+                    }
                 }
                 else
                 {
                     isValid = false;
-                    resultMessage = "Invalid OTP";
+                    resultMessage = "Invalid Email";
                 }
+                return Json(new { IsValid = isValid, ResultMessage = resultMessage, Id = id }, JsonRequestBehavior.AllowGet);
             }
-            else
-            {
-                isValid = false;
-                resultMessage = "Invalid Email";
-            }
-            return Json(new { IsValid = isValid, ResultMessage = resultMessage, Id = id }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult ChangePassword(LoginViewModel objChangePassword)
         {
-            ProjectLibraryEntities std = new ProjectLibraryEntities();
-            var resultMessage = string.Empty;
-            var isValid = false;
-            var id = 0;
-
-            if (std.tbl_Registration.Any(m => m.Email == objChangePassword.Email))
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                var UserDetails = std.tbl_Registration.Where(m => m.Email == objChangePassword.Email).FirstOrDefault();
-                UserDetails.Password = objChangePassword.Password;
-                std.SaveChanges();
+                var resultMessage = string.Empty;
+                var isValid = false;
+                var id = 0;
 
-                isValid = true;
-                resultMessage = "password changed successfully";
-                id = (int)(UserDetails?.UserID);
-                return Json(
-                new
+                if (std.tbl_Registration.Any(m => m.Email == objChangePassword.Email))
                 {
-                    IsValid = true,
-                    ResultMessage = resultMessage,
-                    Id = id,
-                    redirectToUrl = Url.Action("Index", "Login")
-                });
-            }
-            else
-            {
-                isValid = false;
-                resultMessage = "Invalid User";
-            }
-            return Json(new { IsValid = isValid, ResultMessage = resultMessage, Id = id }, JsonRequestBehavior.AllowGet);
-        }
+                    var UserDetails = std.tbl_Registration.Where(m => m.Email == objChangePassword.Email).FirstOrDefault();
+                    UserDetails.Password = objChangePassword.Password;
+                    std.SaveChanges();
 
+                    isValid = true;
+                    resultMessage = "password changed successfully";
+                    id = (int)(UserDetails?.UserID);
+                    return Json(
+                    new
+                    {
+                        IsValid = true,
+                        ResultMessage = resultMessage,
+                        Id = id,
+                        redirectToUrl = Url.Action("Index", "Login")
+                    });
+                }
+                else
+                {
+                    isValid = false;
+                    resultMessage = "Invalid User";
+                }
+                return Json(new { IsValid = isValid, ResultMessage = resultMessage, Id = id }, JsonRequestBehavior.AllowGet);
+            }
+        }
         public ActionResult LogOut()
         {
             Session["UserID"] = null;

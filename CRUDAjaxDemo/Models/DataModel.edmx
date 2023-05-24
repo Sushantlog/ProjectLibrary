@@ -19,6 +19,15 @@
           <Property Name="CollegeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CollegeName" Type="varchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="tbl_Comments">
+          <Key>
+            <PropertyRef Name="CommentId" />
+          </Key>
+          <Property Name="CommentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="CommentHeader" Type="varchar" MaxLength="255" />
+          <Property Name="CommentDescription" Type="varchar" MaxLength="1000" />
+        </EntityType>
         <EntityType Name="tbl_FilesDetails">
           <Key>
             <PropertyRef Name="FileID" />
@@ -56,6 +65,18 @@
           <Property Name="SynopsisHeader" Type="varchar" MaxLength="255" />
           <Property Name="SynopsisDescription" Type="varchar" MaxLength="1000" />
         </EntityType>
+        <Association Name="FK__tbl_Comme__UserI__49C3F6B7">
+          <End Role="tbl_Registration" Type="Self.tbl_Registration" Multiplicity="0..1" />
+          <End Role="tbl_Comments" Type="Self.tbl_Comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Registration">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="tbl_Comments">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__tbl_Files__Synop__3C69FB99">
           <End Role="tbl_SynopsisDetails" Type="Self.tbl_SynopsisDetails" Multiplicity="0..1" />
           <End Role="tbl_FilesDetails" Type="Self.tbl_FilesDetails" Multiplicity="*" />
@@ -119,10 +140,15 @@
         <EntityContainer Name="ProjectLibraryModelStoreContainer">
           <EntitySet Name="tbl_CategoryMaster" EntityType="Self.tbl_CategoryMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_CollegeMaster" EntityType="Self.tbl_CollegeMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Comments" EntityType="Self.tbl_Comments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_FilesDetails" EntityType="Self.tbl_FilesDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_OTP" EntityType="Self.tbl_OTP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Registration" EntityType="Self.tbl_Registration" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SynopsisDetails" EntityType="Self.tbl_SynopsisDetails" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tbl_Comme__UserI__49C3F6B7" Association="Self.FK__tbl_Comme__UserI__49C3F6B7">
+            <End Role="tbl_Registration" EntitySet="tbl_Registration" />
+            <End Role="tbl_Comments" EntitySet="tbl_Comments" />
+          </AssociationSet>
           <AssociationSet Name="FK__tbl_Files__Synop__3C69FB99" Association="Self.FK__tbl_Files__Synop__3C69FB99">
             <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
             <End Role="tbl_FilesDetails" EntitySet="tbl_FilesDetails" />
@@ -175,6 +201,11 @@
             <End Role="tbl_Registration" EntitySet="tbl_Registration" />
             <End Role="tbl_SynopsisDetails" EntitySet="tbl_SynopsisDetails" />
           </AssociationSet>
+          <EntitySet Name="tbl_Comments" EntityType="ProjectLibraryModel.tbl_Comments" />
+          <AssociationSet Name="FK__tbl_Comme__UserI__49C3F6B7" Association="ProjectLibraryModel.FK__tbl_Comme__UserI__49C3F6B7">
+            <End Role="tbl_Registration" EntitySet="tbl_Registration" />
+            <End Role="tbl_Comments" EntitySet="tbl_Comments" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="tbl_CategoryMaster">
           <Key>
@@ -221,6 +252,7 @@
           <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="tbl_OTP" Relationship="ProjectLibraryModel.FK__tbl_OTP__UserID__267ABA7A" FromRole="tbl_Registration" ToRole="tbl_OTP" />
           <NavigationProperty Name="tbl_SynopsisDetails" Relationship="ProjectLibraryModel.FK__tbl_Synop__UserI__37A5467C" FromRole="tbl_Registration" ToRole="tbl_SynopsisDetails" />
+          <NavigationProperty Name="tbl_Comments" Relationship="ProjectLibraryModel.FK__tbl_Comme__UserI__49C3F6B7" FromRole="tbl_Registration" ToRole="tbl_Comments" />
         </EntityType>
         <EntityType Name="tbl_SynopsisDetails">
           <Key>
@@ -297,6 +329,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tbl_Comments">
+          <Key>
+            <PropertyRef Name="CommentId" />
+          </Key>
+          <Property Name="CommentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="CommentHeader" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="CommentDescription" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_Registration" Relationship="ProjectLibraryModel.FK__tbl_Comme__UserI__49C3F6B7" FromRole="tbl_Comments" ToRole="tbl_Registration" />
+        </EntityType>
+        <Association Name="FK__tbl_Comme__UserI__49C3F6B7">
+          <End Type="ProjectLibraryModel.tbl_Registration" Role="tbl_Registration" Multiplicity="0..1" />
+          <End Type="ProjectLibraryModel.tbl_Comments" Role="tbl_Comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Registration">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="tbl_Comments">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -357,6 +411,16 @@
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="SynopsisID" ColumnName="SynopsisID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Comments">
+            <EntityTypeMapping TypeName="ProjectLibraryModel.tbl_Comments">
+              <MappingFragment StoreEntitySet="tbl_Comments">
+                <ScalarProperty Name="CommentDescription" ColumnName="CommentDescription" />
+                <ScalarProperty Name="CommentHeader" ColumnName="CommentHeader" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="CommentId" ColumnName="CommentId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
