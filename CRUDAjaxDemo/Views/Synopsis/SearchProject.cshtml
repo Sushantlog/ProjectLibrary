@@ -229,16 +229,16 @@
             var fileHtml = '';
             for (var i = 0; i < files.length; i++) {
                 fileHtml += '<span>' + files[i].FileName + '</span>';
-                fileHtml += '<a href="Synopsis/Download/' + files[i].FileID + '"" >';
-                fileHtml += '<img src = "../../Images/Download.png"" class="downloadIcon" />';
-                fileHtml += '</a>';
+                //fileHtml += '<a href="Synopsis/Download/' + files[i].FileID + '"" >';
+                //fileHtml += '<img src = "../../Images/Download.png"" class="downloadIcon" />';
+                //fileHtml += '</a>';
                 fileHtml += '</br>';
             }
 
             var editButton = ''
-            if (item.UserId == $("#LoginUserId").val()) {
-                editButton = '<input id="EditBtn" value="Edit" class="btn" type="button" onclick="EditSynopsisDetails(' + item.SynopsisId + ')" />';
-            }
+            //if (item.UserId == $("#LoginUserId").val()) {
+            //    editButton = '<input id="EditBtn" value="Edit" class="btn" type="button" onclick="EditSynopsisDetails(' + item.SynopsisId + ')" />';
+            //}
 
             html += '<tr>';
             html += '<td>' + item.Index + '</td>';

@@ -106,6 +106,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Database Script\ProjectLibrary Qry.sql" />
     <Content Include="Global.asax" />
     <Content Include="Html\background5.jpg" />
     <Content Include="Html\index.js" />

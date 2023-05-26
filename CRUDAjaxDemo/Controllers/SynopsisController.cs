@@ -112,31 +112,35 @@ namespace CRUDAjaxDemo.Controllers
             {
                 FilesListModel FileList = new FilesListModel();
                 FileList.LoginUserId = Id;
-                IPagedList<SynopsisModel> synopsysList = null;
-
-                synopsysList = std.tbl_SynopsisDetails.AsEnumerable().Select((m, i) => new SynopsisModel()
+                var list = std.tbl_SynopsisDetails.Select(m => new SynopsisModel()
                 {
-                    Index = i + 1,
                     SynopsisId = m.SynopsisID,
                     UserId = m.UserID,
                     CategoryId = m.CategoryID,
                     CollegeId = m.CategoryID,
 
-                    UserName = m.tbl_Registration.UserName,
-                    CategoryName = m.tbl_CategoryMaster.CategoryName,
-                    CollegeName = m.tbl_CollegeMaster.CollegeName,
-
                     SynopsisHeader = m.SynopsisHeader,
-                    SynopsisDescription = m.SynopsisDescription,
-                    Files = std.tbl_FilesDetails.AsEnumerable().Where(x => x.SynopsisID == m.SynopsisID).Select(n => new FilesViewModel()
+                    SynopsisDescription = m.SynopsisDescription
+                }).ToList();
+
+                int i = 1;
+
+                foreach (var item in list)
+                {
+                    item.Index = i++;
+                    item.UserName = std.tbl_Registration.Where(m => m.UserID == item.UserId).Select(m => m.UserName).FirstOrDefault();
+                    item.CategoryName = std.tbl_CategoryMaster.Where(m => m.CategoryID == item.CategoryId).Select(m => m.CategoryName).FirstOrDefault();
+                    item.CollegeName = std.tbl_CollegeMaster.Where(m => m.CollegeID == item.CollegeId).Select(m => m.CollegeName).FirstOrDefault();
+                    item.Files = std.tbl_FilesDetails.Where(x => x.SynopsisID == item.SynopsisId).Select(n => new FilesViewModel()
                     {
                         FileID = n.FileID,
                         SynopsisID = n.SynopsisID,
                         FileName = n.FileName,
                         FilePath = n.FilePath
-                    }).ToList()
-                }).ToPagedList(pageIndex, pageSize);
-                FileList.SynopsysList = synopsysList;
+                    }).ToList();
+                }
+
+                FileList.SynopsysList = list.ToPagedList(pageIndex, pageSize); ;
                 return View(FileList);
             }
         }
@@ -204,7 +208,7 @@ namespace CRUDAjaxDemo.Controllers
                 var collegeMaster = new SelectList(std.tbl_CollegeMaster.ToList(), "CollegeID", "CollegeName");
                 ViewData["College"] = collegeMaster;
                 SearchSynopsysModel FileList = new SearchSynopsysModel();
-                
+
                 List<tbl_SynopsisDetails> filteredList = new List<tbl_SynopsisDetails>();
                 if (ObjSearch.CategoryId > 0)
                 {
