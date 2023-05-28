@@ -116,10 +116,13 @@
     <Content Include="Html\project.html" />
     <Content Include="Html\style.css" />
     <Content Include="Html\upload.html" />
+    <Content Include="Images\Delete.png" />
     <Content Include="Images\Download.png" />
+    <Content Include="Images\Edit.png" />
     <Content Include="Images\help.png" />
     <Content Include="Images\logout.png" />
     <Content Include="Images\profile.png" />
+    <Content Include="Images\Re-send.png" />
     <Content Include="Images\setting.png" />
     <Content Include="Images\User-png.png" />
     <Content Include="Models\DataModel.Context.tt">

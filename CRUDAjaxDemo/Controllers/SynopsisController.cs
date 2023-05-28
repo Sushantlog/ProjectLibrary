@@ -32,6 +32,10 @@ namespace CRUDAjaxDemo.Controllers
 
                 SynopsisModel synopsisModel = new SynopsisModel();
                 synopsisModel.UserId = Id;
+                synopsisModel.SynopsisId = 0;
+                synopsisModel.CollegeId = 0;
+                synopsisModel.CategoryId = 0;
+                synopsisModel.Files = new List<FilesViewModel>();
 
                 return View(synopsisModel);
             }
@@ -42,57 +46,113 @@ namespace CRUDAjaxDemo.Controllers
         {
             using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                tbl_SynopsisDetails synopsisModel = new tbl_SynopsisDetails();
-                synopsisModel.UserID = objSynopsis.UserId;
-                synopsisModel.CategoryID = objSynopsis.CategoryId;
-                synopsisModel.CollegeID = objSynopsis.CollegeId;
-                synopsisModel.SynopsisHeader = objSynopsis.SynopsisHeader;
-                synopsisModel.SynopsisDescription = objSynopsis.SynopsisDescription;
-                std.tbl_SynopsisDetails.Add(synopsisModel);
-                std.SaveChanges();
-
-                for (int i = 0; i < Request.Files.Count; i++)
+                if (!objSynopsis.IsEdit)
                 {
-                    //User Folder
-                    var UserFolder = "User_" + objSynopsis.UserId;
-                    string FilePath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, @"/Files/" + UserFolder);
-                    bool exists = Directory.Exists(Server.MapPath(FilePath));
-
-                    if (!exists)
-                        Directory.CreateDirectory(Server.MapPath(FilePath));
-
-
-                    //Synopsis folder
-                    var SynopsisFolder = "Synopsis_" + synopsisModel.SynopsisID;
-                    string SynopsisFilePath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, @"/Files/" + UserFolder + "/" + SynopsisFolder);
-                    bool SynopsisExists = Directory.Exists(Server.MapPath(SynopsisFilePath));
-
-                    if (!SynopsisExists)
-                        Directory.CreateDirectory(Server.MapPath(SynopsisFilePath));
-
-
-                    var fileName = Request.Files[i].FileName;
-                    var filePath = SynopsisFilePath + "/" + fileName;
-                    var path = Path.Combine(Server.MapPath(filePath));
-                    Request.Files[i].SaveAs(path);
-
-
-                    tbl_FilesDetails fileDetails = new tbl_FilesDetails();
-                    fileDetails.SynopsisID = synopsisModel.SynopsisID;
-                    fileDetails.FileName = fileName;
-                    fileDetails.FilePath = filePath;
-
-                    std.tbl_FilesDetails.Add(fileDetails);
+                    tbl_SynopsisDetails synopsisModel = new tbl_SynopsisDetails();
+                    synopsisModel.UserID = objSynopsis.UserId;
+                    synopsisModel.CategoryID = objSynopsis.CategoryId;
+                    synopsisModel.CollegeID = objSynopsis.CollegeId;
+                    synopsisModel.SynopsisHeader = objSynopsis.SynopsisHeader;
+                    synopsisModel.SynopsisDescription = objSynopsis.SynopsisDescription;
+                    std.tbl_SynopsisDetails.Add(synopsisModel);
                     std.SaveChanges();
-                }
 
-                return Json(new
+                    for (int i = 0; i < Request.Files.Count; i++)
+                    {
+                        //User Folder
+                        var UserFolder = "User_" + objSynopsis.UserId;
+                        string FilePath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, @"/Files/" + UserFolder);
+                        bool exists = Directory.Exists(Server.MapPath(FilePath));
+
+                        if (!exists)
+                            Directory.CreateDirectory(Server.MapPath(FilePath));
+
+
+                        //Synopsis folder
+                        var SynopsisFolder = "Synopsis_" + synopsisModel.SynopsisID;
+                        string SynopsisFilePath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, @"/Files/" + UserFolder + "/" + SynopsisFolder);
+                        bool SynopsisExists = Directory.Exists(Server.MapPath(SynopsisFilePath));
+
+                        if (!SynopsisExists)
+                            Directory.CreateDirectory(Server.MapPath(SynopsisFilePath));
+
+
+                        var fileName = Request.Files[i].FileName;
+                        var filePath = SynopsisFilePath + "/" + fileName;
+                        var path = Path.Combine(Server.MapPath(filePath));
+                        Request.Files[i].SaveAs(path);
+
+
+                        tbl_FilesDetails fileDetails = new tbl_FilesDetails();
+                        fileDetails.SynopsisID = synopsisModel.SynopsisID;
+                        fileDetails.FileName = fileName;
+                        fileDetails.FilePath = filePath;
+
+                        std.tbl_FilesDetails.Add(fileDetails);
+                        std.SaveChanges();
+                    }
+
+                    return Json(new
+                    {
+                        IsValid = true,
+                        ResultMessage = "Project saved Successfully",
+                        Id = synopsisModel.SynopsisID,
+                        redirectToUrl = Url.Action("ViewFiles", "Synopsis", new { Id = objSynopsis.UserId })
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                else
                 {
-                    IsValid = true,
-                    ResultMessage = "Project saved Successfully",
-                    Id = synopsisModel.SynopsisID,
-                    redirectToUrl = Url.Action("ViewFiles", "Synopsis", new { Id = objSynopsis.UserId })
-                }, JsonRequestBehavior.AllowGet);
+                    tbl_SynopsisDetails synopsisModel = std.tbl_SynopsisDetails.Where(m => m.SynopsisID == objSynopsis.SynopsisId).FirstOrDefault();
+                    synopsisModel.CategoryID = objSynopsis.CategoryId;
+                    synopsisModel.CollegeID = objSynopsis.CollegeId;
+                    synopsisModel.SynopsisHeader = objSynopsis.SynopsisHeader;
+                    synopsisModel.SynopsisDescription = objSynopsis.SynopsisDescription;
+                    std.SaveChanges();
+
+                    for (int i = 0; i < Request.Files.Count; i++)
+                    {
+                        //User Folder
+                        var UserFolder = "User_" + objSynopsis.UserId;
+                        string FilePath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, @"/Files/" + UserFolder);
+                        bool exists = Directory.Exists(Server.MapPath(FilePath));
+
+                        if (!exists)
+                            Directory.CreateDirectory(Server.MapPath(FilePath));
+
+
+                        //Synopsis folder
+                        var SynopsisFolder = "Synopsis_" + objSynopsis.SynopsisId;
+                        string SynopsisFilePath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, @"/Files/" + UserFolder + "/" + SynopsisFolder);
+                        bool SynopsisExists = Directory.Exists(Server.MapPath(SynopsisFilePath));
+
+                        if (!SynopsisExists)
+                            Directory.CreateDirectory(Server.MapPath(SynopsisFilePath));
+
+
+                        var fileName = Request.Files[i].FileName;
+                        var filePath = SynopsisFilePath + "/" + fileName;
+                        var path = Path.Combine(Server.MapPath(filePath));
+                        Request.Files[i].SaveAs(path);
+
+
+                        tbl_FilesDetails fileDetails = new tbl_FilesDetails();
+                        fileDetails.SynopsisID = objSynopsis.SynopsisId;
+                        fileDetails.FileName = fileName;
+                        fileDetails.FilePath = filePath;
+
+                        std.tbl_FilesDetails.Add(fileDetails);
+                        std.SaveChanges();
+                    }
+
+                    return Json(new
+                    {
+                        IsValid = true,
+                        ResultMessage = "Project edited Successfully",
+                        Id = synopsisModel.SynopsisID,
+                        redirectToUrl = Url.Action("ViewFiles", "Synopsis", new { Id = objSynopsis.UserId })
+                    }, JsonRequestBehavior.AllowGet);
+
+                }
             }
         }
 
@@ -117,8 +177,7 @@ namespace CRUDAjaxDemo.Controllers
                     SynopsisId = m.SynopsisID,
                     UserId = m.UserID,
                     CategoryId = m.CategoryID,
-                    CollegeId = m.CategoryID,
-
+                    CollegeId = m.CollegeID,
                     SynopsisHeader = m.SynopsisHeader,
                     SynopsisDescription = m.SynopsisDescription
                 }).ToList();
@@ -150,18 +209,32 @@ namespace CRUDAjaxDemo.Controllers
         {
             using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
+                var categoryMaster = new SelectList(std.tbl_CategoryMaster.ToList(), "CategoryID", "CategoryName");
+                ViewData["Category"] = categoryMaster;
+
+                var collegeMaster = new SelectList(std.tbl_CollegeMaster.ToList(), "CollegeID", "CollegeName");
+                ViewData["College"] = collegeMaster;
+
                 var SynopsysDetails = std.tbl_SynopsisDetails.Where(m => m.UserID == objSynopsis.UserId && m.SynopsisID == objSynopsis.SynopsisId).FirstOrDefault();
+                SynopsisModel ObjSynopsys = new SynopsisModel();
                 if (SynopsysDetails != null)
                 {
-
+                    ObjSynopsys.UserId = SynopsysDetails.UserID;
+                    ObjSynopsys.SynopsisId = SynopsysDetails.SynopsisID;
+                    ObjSynopsys.CategoryId = SynopsysDetails.CategoryID;
+                    ObjSynopsys.CollegeId = SynopsysDetails.CollegeID;
+                    ObjSynopsys.SynopsisHeader = SynopsysDetails.SynopsisHeader;
+                    ObjSynopsys.SynopsisDescription = SynopsysDetails.SynopsisDescription;
+                    ObjSynopsys.Files = SynopsysDetails.tbl_FilesDetails.Select(m => new FilesViewModel
+                    {
+                        FileID = m.FileID,
+                        SynopsisID = m.SynopsisID,
+                        FileName = m.FileName,
+                        FilePath = Server.MapPath(m.FilePath)
+                    }).ToList();
                 }
-                return Json(new
-                {
-                    IsValid = true,
-                    ResultMessage = "Project saved Successfully",
-                    //Id = synopsisModel.SynopsisID,
-                    redirectToUrl = Url.Action("ViewFiles", "Synopsis", new { Id = objSynopsis.UserId })
-                }, JsonRequestBehavior.AllowGet);
+                return View("Index", ObjSynopsys);
+
             }
         }
 
@@ -174,6 +247,35 @@ namespace CRUDAjaxDemo.Controllers
                 return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, FileDetails.FileName);
             }
         }
+
+        public ActionResult DeleteFile(int FileId)
+        {
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
+            {
+                var IsValid = false;
+                var ResultMessage = "";
+                var FileDetails = std.tbl_FilesDetails.Where(m => m.FileID == FileId).FirstOrDefault();
+                if (FileDetails != null)
+                {
+                    std.tbl_FilesDetails.Remove(FileDetails);
+                    std.SaveChanges();
+
+                    IsValid = true;
+                    ResultMessage = "File Deleted successfully!";
+                }
+                else
+                {
+                    IsValid = false;
+                    ResultMessage = "Record not exist!";
+                }
+                return Json(new
+                {
+                    IsValid = IsValid,
+                    ResultMessage = ResultMessage
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
         public ActionResult SearchProject(int Id)
         {
             if (Session["UserID"] != null && Session["UserID"].ToString() != Id.ToString())
@@ -182,13 +284,19 @@ namespace CRUDAjaxDemo.Controllers
             }
             using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                var categoryMaster = new SelectList(std.tbl_CategoryMaster.ToList(), "CategoryID", "CategoryName");
+                var CategoryList = std.tbl_CategoryMaster.ToList();
+                var categoryMaster = new SelectList(CategoryList, "CategoryID", "CategoryName");
                 ViewData["Category"] = categoryMaster;
 
-                var collegeMaster = new SelectList(std.tbl_CollegeMaster.ToList(), "CollegeID", "CollegeName");
+                var CollegeList = std.tbl_CollegeMaster.ToList();
+                var collegeMaster = new SelectList(CollegeList, "CollegeID", "CollegeName");
                 ViewData["College"] = collegeMaster;
+
                 SearchSynopsysModel FileList = new SearchSynopsysModel();
                 FileList.LoginUserId = Id;
+                FileList.DefaultCategory = CategoryList.Select(m => m.CategoryID).FirstOrDefault();
+                FileList.DefaultCollege = CollegeList.Select(m => m.CollegeID).FirstOrDefault();
+
                 return View(FileList);
             }
         }
@@ -242,24 +350,24 @@ namespace CRUDAjaxDemo.Controllers
                 FileList.PageSize = 10;
                 int startIndex = (ObjSearch.PageIndex - 1) * FileList.PageSize;
                 FileList.RecordCount = filteredList.Distinct().ToList().Count();
-                var list = filteredList.Distinct().Skip(startIndex).Take(FileList.PageSize);
+                var list = filteredList.Distinct().Select((m, i) => new { Index = i, Model = m }).Skip(startIndex).Take(FileList.PageSize);
 
 
-                FileList.SynopsysList = list.Select((m, i) => new SynopsisModel()
+                FileList.SynopsysList = list.Select(synp => new SynopsisModel()
                 {
-                    Index = i + 1,
-                    SynopsisId = m.SynopsisID,
-                    UserId = m.UserID,
-                    CategoryId = m.CategoryID,
-                    CollegeId = m.CategoryID,
+                    Index = synp.Index + 1,
+                    SynopsisId = synp.Model.SynopsisID,
+                    UserId = synp.Model.UserID,
+                    CategoryId = synp.Model.CategoryID,
+                    CollegeId = synp.Model.CategoryID,
 
-                    UserName = m.tbl_Registration.UserName,
-                    CategoryName = m.tbl_CategoryMaster.CategoryName,
-                    CollegeName = m.tbl_CollegeMaster.CollegeName,
+                    UserName = synp.Model.tbl_Registration.UserName,
+                    CategoryName = synp.Model.tbl_CategoryMaster.CategoryName,
+                    CollegeName = synp.Model.tbl_CollegeMaster.CollegeName,
 
-                    SynopsisHeader = m.SynopsisHeader,
-                    SynopsisDescription = m.SynopsisDescription,
-                    Files = m.tbl_FilesDetails.Select(n => new FilesViewModel()
+                    SynopsisHeader = synp.Model.SynopsisHeader,
+                    SynopsisDescription = synp.Model.SynopsisDescription,
+                    Files = synp.Model.tbl_FilesDetails.Select(n => new FilesViewModel()
                     {
                         FileID = n.FileID,
                         SynopsisID = n.SynopsisID,

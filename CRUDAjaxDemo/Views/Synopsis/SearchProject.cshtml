@@ -123,9 +123,20 @@
         .SearchBox input, select {
             width: 50%
         }
+    .btnDiv {
+        width: 100%;
+        text-align: right;
+        padding: 10px;
+        top: 0 !important;
+        position: absolute;
+    }
 </style>
 <div class="header">
     <h2 class="headerText">Search Project</h2>
+
+    <div class="btnDiv">
+        <a href="@Url.Action("Index", "Home", new { Id=Model.LoginUserId})" class="btn btn-info"><span>Home</span></a>
+    </div>
     @Html.HiddenFor(m => m.LoginUserId)
 </div>
 <div class="SearchBox">
@@ -182,7 +193,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#College").val(1);
+        $("#College").val(@Model.DefaultCollege);
         Search(1);
     });
     $("body").on("click", ".Pager .page", function () {

@@ -20,11 +20,12 @@
     {
         @Html.AntiForgeryToken()
         <h2>Synopsis</h2>
-        @Html.HiddenFor(m=>m.UserId)
+        @Html.HiddenFor(m => m.UserId)
+        @Html.HiddenFor(m => m.SynopsisId)
 
         <div class="input-box">
             <i class='bx bxs-envelope'></i>
-            @Html.DropDownList("College", (IEnumerable<SelectListItem>)ViewData["College"],"--Select--")
+            @Html.DropDownList("College", (IEnumerable<SelectListItem>)ViewData["College"], "--Select--")
         </div>
         <div class="input-box">
             <i class='bx bxs-lock-alt'></i>
@@ -42,19 +43,64 @@
         <div class="input-box">
             <i class='bx bxs-lock-alt'></i>
             @Html.TextBox("files", "", new { @type = "file", @multiple = "multiple" })
+
+            <div class="editFiles">
+                @foreach (var item in Model.Files)
+                {
+                    <span>@item.FileName</span> <img src="~/Images/Delete.png" class="downloadIcon" onclick="DeleteFile(@item.FileID)" /><br />
+                }
+            </div>
         </div>
         <div class="button">
-            <input value="Save" class="btn" type="button" onclick="SaveSynopsisDetails()" />
+            <input value="Save" class="Save btn" type="button" onclick="SaveSynopsisDetails(false)" />
+            <input value="Edit" class="Edit btn" type="button" onclick="SaveSynopsisDetails(true)" />
         </div>
     }
 </div>
 
 <script type="text/javascript">
     $(document).ready(function () {
+        debugger;
+        if (@Model.SynopsisId > 0 ) {
+            $('.Edit').show();
+            $('.Save').hide();
+        }
+        else {
+            $('.Edit').hide();
+            $('.Save').show();
+        }
+        if (@Model.CollegeId>0) {
+            $('#College').val(@Model.CollegeId);
+        }
+        if (@Model.CategoryId>0) {
+            $('#Category').val(@Model.CategoryId);
+        }
         //tostr.success("me1");
     });
+    function DeleteFile(FileId) {
+        var data = JSON.stringify({ FileId: FileId });
+        $.ajax({
+            url: "/Synopsis/DeleteFile",
+            type: "POST",
+            data: data,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result.IsValid) {
+                    toastr.success(result.ResultMessage);
+                    location.reload();
+                }
+                else {
+                    toastr.error(result.ResultMessage)
+                }
+            },
+            error: function (errormessage) {
+                toastr.error("Error");
+            }
+        });
+    }
 
-    function SaveSynopsisDetails() {
+    function SaveSynopsisDetails(IsEdit) {
         if ($("#College").val() == undefined || $("#College").val() == '') {
             toastr.error("Please select College");
             return;
@@ -74,8 +120,8 @@
             toastr.error("Please enter problem statement");
             return;
         }
-
-        if ($("#files").val() == undefined || $("#files").val() == '') {
+        debugger;
+        if (($("#files").val() == undefined || $("#files").val() == '')&& @Model.Files.Count==0) {
             toastr.error("Please select file");
             return;
         }
@@ -88,32 +134,40 @@
         for (var i = 0; i < files.length; i++) {
             fileData.append(files[i].name, files[i]);
         }
-        // Adding one more key to FormData object  
-        fileData.append('UserId', $("#UserId").val()); 
-        fileData.append('CollegeID', $("#College").val()); 
-        fileData.append('CategoryId', $("#Category").val()); 
-        fileData.append('SynopsisHeader', $("#SynopsisHeader").val()); 
-        fileData.append('SynopsisDescription', $("#SynopsisDescription").val()); 
+        // Adding one more key to FormData object
+        fileData.append('UserId', $("#UserId").val());
+        fileData.append('CollegeID', $("#College").val());
+        fileData.append('CategoryId', $("#Category").val());
+        fileData.append('SynopsisId', $("#SynopsisId").val());
+        fileData.append('SynopsisHeader', $("#SynopsisHeader").val());
+        fileData.append('SynopsisDescription', $("#SynopsisDescription").val());
+        fileData.append('IsEdit', IsEdit);
 
         $.ajax({
             url: "/Synopsis/SaveSynopsisDetails",
             type: "POST",
             data: fileData,
-            contentType: false, // Not to set any content header  
-            processData: false, // Not to process data  
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
             success: function (result) {
                 if (result.IsValid) {
-                    $("#UserId").val(0);
-                    $("#College").val(0);
-                    $("#Category").val(0);
-                    $("#SynopsisHeader").val('');
-                    $("#SynopsisDescription").val('');
-                    $("#files").val('');
-                    toastr.success(result.ResultMessage);
-                    setTimeout(
-                        window.location.href = result.redirectToUrl
-                        , 15000);
+                    if (!IsEdit) {
+                        $("#UserId").val(0);
+                        $("#College").val(0);
+                        $("#Category").val(0);
+                        $("#SynopsisHeader").val('');
+                        $("#SynopsisDescription").val('');
+                        $("#files").val('');
+                        toastr.success(result.ResultMessage);
+                        setTimeout(
+                            window.location.href = result.redirectToUrl
+                            , 15000);
+                    }
+                    else {
+                        toastr.success(result.ResultMessage);
+                        location.reload();
 
+                    }
                 }
                 else {
                     toastr.error(result.ResultMessage)

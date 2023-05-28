@@ -4,9 +4,31 @@
     ViewBag.Title = "Register";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .btnDiv {
+        width: 100%;
+        text-align: right;
+        padding: 10px;
+        top: 0 !important;
+        position: absolute;
+    }
 
+    .form-box {
+        position: relative !important;
+        width: 400px !important;
+        border: 2px solid rgba(255,255,2550.5);
+        border-radius: 20px;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: column !important;
+        padding: 10px !important;
+        height: auto !important;
+    }
+</style>
 <div class="container">
     <div class="form-box">
+        <h2>Registration</h2>
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
@@ -31,10 +53,13 @@
             <div class="button">
                 <input value="Register" class="btn" type="button" onclick="Register()" />
             </div>
-           }
+        }
     </div>
 </div>
 
+<div class="btnDiv">
+    <a href="@Url.Action("Index", "Login")" class="btn btn-info"><span>Login</span></a>
+</div>
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -63,7 +88,7 @@
             return;
         }
 
-        if ($("#Password").val() !=  $("#ConfirmPassword").val()) {
+        if ($("#Password").val() != $("#ConfirmPassword").val()) {
             toastr.error("Password & Confirm Password are different! Please enter correct values!");
             return;
         }

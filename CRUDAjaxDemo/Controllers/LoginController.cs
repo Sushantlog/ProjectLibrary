@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
+using static System.Net.WebRequestMethods;
 
 namespace CRUDAjaxDemo.Controllers
 {
@@ -188,12 +189,46 @@ namespace CRUDAjaxDemo.Controllers
                 var resultMessage = string.Empty;
                 var isValid = false;
                 var id = 0;
-
-                if (std.tbl_Registration.Any(m => m.Email == objChangePassword.Email))
+                tbl_Registration UserDetails = null;
+                if (objChangePassword.UserId > 0)
                 {
-                    var UserDetails = std.tbl_Registration.Where(m => m.Email == objChangePassword.Email).FirstOrDefault();
+                    UserDetails = std.tbl_Registration.Where(m => m.UserID == objChangePassword.UserId).FirstOrDefault();
+                }
+                else
+                {
+                    UserDetails = std.tbl_Registration.Where(m => m.Email == objChangePassword.Email).FirstOrDefault();
+                }
+                if (UserDetails != null)
+                {
                     UserDetails.Password = objChangePassword.Password;
                     std.SaveChanges();
+                    try
+                    {
+                        string username = "TestAppSushant2023@Gmail.com";
+                        string password = "eqeemquxqoaphqus";
+                        ICredentialsByHost credentials = new NetworkCredential(username, password);
+
+                        SmtpClient smtpClient = new SmtpClient()
+                        {
+                            Host = "smtp.gmail.com",
+                            Port = 587,
+                            EnableSsl = true,
+                            Credentials = credentials
+                        };
+
+                        MailMessage mail = new MailMessage();
+                        mail.From = new MailAddress(username);
+                        mail.To.Add(objChangePassword.Email);
+                        mail.Subject = "Password Changed for Project Library";
+                        string Body = "Password changed for user Id : " + objChangePassword.Email + "\nNew Password is: " + UserDetails.Password;
+                        mail.Body = Body;
+
+                        smtpClient.Send(mail);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
 
                     isValid = true;
                     resultMessage = "password changed successfully";
@@ -204,7 +239,7 @@ namespace CRUDAjaxDemo.Controllers
                         IsValid = true,
                         ResultMessage = resultMessage,
                         Id = id,
-                        redirectToUrl = Url.Action("Index", "Login")
+                        RedirectToUrl = Url.Action("Index", "Login")
                     });
                 }
                 else

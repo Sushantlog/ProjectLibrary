@@ -3,9 +3,34 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .btnDiv {
+        width: 100%;
+        text-align: right;
+        padding: 10px;
+        top: 0 !important;
+        position: absolute;
+    }
 
+    .form-box {
+        position: relative !important;
+        width: 400px !important;
+        border: 2px solid rgba(255,255,2550.5);
+        border-radius: 20px;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: column !important;
+        padding: 10px !important;
+        height: auto !important;
+    }
+</style>
+<div class="btnDiv">
+    <a href="@Url.Action("Index", "Home", new { Id=Model.UserId})" class="btn btn-info"><span>Home</span></a>
+</div>
 <div class="container">
     <div class="form-box">
+        <h2>Comment</h2>
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
