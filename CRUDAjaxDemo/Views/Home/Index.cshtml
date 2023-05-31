@@ -210,11 +210,11 @@
         <h3 class="logo">Welcome To Project Library</h3>
         @Html.HiddenFor(m => m.UserId)
         @*<ul>
-            <li><a href="#" class="p">home</a></li>
-            <li><a href="#" class="p">features</a></li>
-            <li><a href="#" class="p">about</a></li>
-            <li><a href="#" class="p">contact</a></li>
-        </ul>*@
+                <li><a href="#" class="p">home</a></li>
+                <li><a href="#" class="p">features</a></li>
+                <li><a href="#" class="p">about</a></li>
+                <li><a href="#" class="p">contact</a></li>
+            </ul>*@
         <img src="~/Images/User-png.png" class="user-pic" onclick="toggleMenu()">
         <div class="sub-menu-wrap" id="submenu">
             <div class="sub-menu">
@@ -223,21 +223,21 @@
                     <h2> @Model.UserName</h2>
                 </div>
                 <hr>
-                @*<a href="#" class="sub-menu-link">
-                    <img src="images/profile.png" alt="">
+                <a href="@Url.Action("EditUserProfile","Registration",new { Id= Model.UserId})" class="sub-menu-link">
+                    <img src="../../images/profile.png" alt="">
                     <p>Edit Profile</p>
                     <span>></span>
                 </a>
                 <a href="#" class="sub-menu-link">
-                    <img src="images/setting.png" alt="">
-                    <p>Setting & Privacy</p>
+                    <img src="../../images/setting.png" alt="">
+                    <p>Change Password</p>
                     <span>></span>
                 </a>
                 <a href="#" class="sub-menu-link">
-                    <img src="images/help.png" alt="">
-                    <p>Help & Support</p>
+                    <img src="../../images/Contact.png" alt="">
+                    <p>Contact</p>
                     <span>></span>
-                </a>*@
+                </a>
                 <a href="@Url.Action("LogOut","Login")" class="sub-menu-link">
                     <img src="../../images/logout.png" alt="">
                     <p>Logout</p>
@@ -254,34 +254,34 @@
                  data-hs-counter-options='{
            "isCommaSeparated": true
          }'>@Model.counter.TotalProjects</div>
-            <span>Total Projects</span>
-        </div>
+        <span>Total Projects</span>
+    </div>
 
-        <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
-            <div class="js-counter h1 mb-1"
-                 data-hs-counter-options='{
+    <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+        <div class="js-counter h1 mb-1"
+             data-hs-counter-options='{
            "isCommaSeparated": true
          }'>@Model.counter.TotalUsers</div>
-            <span>Total Users</span>
-        </div>
+        <span>Total Users</span>
+    </div>
 
-        <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
-            <div class="js-counter h1 mb-1"
-                 data-hs-counter-options='{
+    <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+        <div class="js-counter h1 mb-1"
+             data-hs-counter-options='{
            "isCommaSeparated": true
          }'>@Model.counter.TotalFiles</div>
-            <span>Total Files </span>
-        </div>
+        <span>Total Files </span>
+    </div>
 
-        <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
-            <div class="js-counter h1 mb-1"
-                 data-hs-counter-options='{
+    <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+        <div class="js-counter h1 mb-1"
+             data-hs-counter-options='{
            "isCommaSeparated": true
          }'>@Model.counter.TotalActiveUsers</div>
-            <span>Total Active Users</span>
-        </div>
+        <span>Total Active Users</span>
     </div>
-    <!-- End Row -->
+</div>
+<!-- End Row -->
 
 </div>
 <div class="button">

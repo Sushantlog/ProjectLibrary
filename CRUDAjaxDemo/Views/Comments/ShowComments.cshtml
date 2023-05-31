@@ -1,0 +1,109 @@
+﻿@model IEnumerable<CRUDAjaxDemo.ViewModels.CommentsViewModel>
+@{
+    ViewBag.Title = "ShowComments";
+}
+
+<style>
+
+    .table {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        .table td, .table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .table tr:hover {
+            background-color: #ddd;
+        }
+
+        .table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+
+    .headerText {
+        padding-top: 15px;
+    }
+
+    .btnDiv {
+        text-align: right;
+        padding: 10px;
+        top: 0px !important;
+        position: absolute;
+        width: 100%;
+    }
+
+    .form-box {
+        position: relative !important;
+        width: 400px;
+        height: auto !important;
+        border: 2px solid rgba(255,255,2550.5);
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px !important;
+    }
+
+</style>
+@*<div class="btnDiv">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-info"><span>Home</span></a>
+</div>*@
+<div class="header">
+    <h2 class="headerText">Comments</h2>
+</div>
+<table id="tblRecord" class="table" style="background-color:white;color:black">
+    <thead>
+        <tr>
+            <th>
+                <span>Sr. No.</span>
+            </th>
+            <th>
+                <span>Comment Header</span>
+            </th>
+            <th>
+                <span>Comment Description</span>
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Index)
+                    @Html.HiddenFor(modelItem => item.UserId)
+                    @Html.HiddenFor(modelItem => item.CommentId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CommentHeader)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CommentDescription)
+                </td>
+
+                <td>
+                    @*<div class="button">
+                            <a href="@Url.Action("EditSynopsisDetails", "Synopsis", new { UserId = item.UserId,@synopsisId=item.SynopsisId})">
+                                <img src="~/Images/Edit.png" class="downloadIcon" />
+                            </a>
+                        </div>*@
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+

@@ -88,5 +88,38 @@ namespace CRUDAjaxDemo.Controllers
                 return View(UserDetails);
             }
         }
+
+        [HttpPost]
+        public ActionResult SaveUserProfile(ProfileViewModel objProfile)
+        {
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
+            {
+                var IsValid = false;
+                var ResultMessage = string.Empty;
+                var RedirectToUrl = string.Empty;
+                var UserDetails = std.tbl_Registration.Where(m => m.UserID == objProfile.UserId).FirstOrDefault();
+                if (UserDetails != null)
+                {
+                    UserDetails.UserName = objProfile.UserName;
+                    UserDetails.Email = objProfile.Email;
+                    std.SaveChanges();
+                    IsValid = true;
+                    ResultMessage = "Profile saved successfully.";
+                    RedirectToUrl = Url.Action("UserProfile", "Registration", new { Id=UserDetails.UserID});
+                }
+                else
+                {
+                    IsValid = false;
+                    ResultMessage = "Record not found.";
+                }
+
+                return Json(new
+                {
+                    IsValid = IsValid,
+                    ResultMessage = ResultMessage,
+                    RedirectToUrl= RedirectToUrl
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

@@ -11,6 +11,24 @@
         position: absolute;
         width: 100%;
     }
+
+    .form-box {
+        position: relative !important;
+        width: 400px;
+        height: auto !important;
+        border: 2px solid rgba(255,255,2550.5);
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px !important;
+    }
+    .editFiles span {
+        border: 1px solid white;
+        padding: 5px;
+        border-radius: 7px;
+        background: white;
+    }
 </style>
 <div class="btnDiv">
     <a href="@Url.Action("Index", "Home", new { Id=Model.UserId})" class="btn btn-info"><span>Home</span></a>
@@ -19,7 +37,7 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        <h2>Synopsis</h2>
+        <h2 class="pageHeader">Add Synopsis</h2>
         @Html.HiddenFor(m => m.UserId)
         @Html.HiddenFor(m => m.SynopsisId)
 
@@ -53,7 +71,7 @@
         </div>
         <div class="button">
             <input value="Save" class="Save btn" type="button" onclick="SaveSynopsisDetails(false)" />
-            <input value="Edit" class="Edit btn" type="button" onclick="SaveSynopsisDetails(true)" />
+            <input value="Save" class="Edit btn" type="button" onclick="SaveSynopsisDetails(true)" />
         </div>
     }
 </div>
@@ -62,10 +80,12 @@
     $(document).ready(function () {
         debugger;
         if (@Model.SynopsisId > 0 ) {
+            $('.pageHeader').html('Edit Synopsys')
             $('.Edit').show();
             $('.Save').hide();
         }
         else {
+            $('.pageHeader').html('Add Synopsys')
             $('.Edit').hide();
             $('.Save').show();
         }
@@ -78,26 +98,29 @@
         //tostr.success("me1");
     });
     function DeleteFile(FileId) {
-        var data = JSON.stringify({ FileId: FileId });
-        $.ajax({
-            url: "/Synopsis/DeleteFile",
-            type: "POST",
-            data: data,
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            success: function (result) {
-                if (result.IsValid) {
-                    toastr.success(result.ResultMessage);
-                    location.reload();
+        if (confirm("Are you sure you want to delete?"))
+        {
+            var data = JSON.stringify({ FileId: FileId });
+            $.ajax({
+                url: "/Synopsis/DeleteFile",
+                type: "POST",
+                data: data,
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    if (result.IsValid) {
+                        toastr.success(result.ResultMessage);
+                        location.reload();
+                    }
+                    else {
+                        toastr.error(result.ResultMessage)
+                    }
+                },
+                error: function (errormessage) {
+                    toastr.error("Error");
                 }
-                else {
-                    toastr.error(result.ResultMessage)
-                }
-            },
-            error: function (errormessage) {
-                toastr.error("Error");
-            }
-        });
+            });
+        }
     }
 
     function SaveSynopsisDetails(IsEdit) {

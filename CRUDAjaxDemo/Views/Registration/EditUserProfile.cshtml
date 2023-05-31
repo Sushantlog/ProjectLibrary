@@ -1,0 +1,96 @@
+﻿@model CRUDAjaxDemo.ViewModels.ProfileViewModel
+@{
+    ViewBag.Title = "EditUserProfile";
+}
+
+
+<style>
+    .btnDiv {
+        width: 100%;
+        text-align: right;
+        padding: 10px;
+        top: 0 !important;
+        position: absolute;
+    }
+
+    .form-box {
+        position: relative !important;
+        width: 400px !important;
+        border: 2px solid rgba(255,255,2550.5);
+        border-radius: 20px;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: column !important;
+        padding: 10px !important;
+        height: auto !important;
+    }
+</style>
+
+<div class="form-box">
+    <h2>Edit User Profile</h2>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <p id="result"></p>
+        @Html.HiddenFor(model => model.UserId)
+        <div class="input-box">
+            <i class='bx bxs-user'></i>
+            @Html.TextBoxFor(model => model.UserName, new { @placeholder = "User Name" })
+        </div>
+        <div class="input-box">
+            <i class='bx bxs-envelope'></i>
+            @Html.TextBoxFor(model => model.Email, new { @placeholder = "Email" })
+        </div>
+        <div class="button">
+            <input value="Save" class="btn" type="button" onclick="Save()" />
+        </div>
+    }
+</div>
+
+<div class="btnDiv">
+    <a href="@Url.Action("Index", "Home", new { Id=Model.UserId})" class="btn btn-info"><span>Home</span></a>
+</div>
+
+<script>
+
+    function Save() {
+        if ($("#UserName").val() == undefined || $("#UserName").val() == '') {
+            toastr.error("Please enter User Name");
+            return;
+        }
+
+        if ($("#Email").val() == undefined || $("#Email").val() == '') {
+            toastr.error("Please enter email");
+            return;
+        }
+
+        var objProfile = new Object();
+        objProfile.UserId = $("#UserId").val();
+        objProfile.Username = $("#UserName").val();
+        objProfile.Email = $("#Email").val();
+
+        var data = JSON.stringify({ objProfile: objProfile });
+        $.ajax({
+            url: "/Registration/SaveUserProfile",
+            type: "POST",
+            data: data,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result.IsValid) {
+                    toastr.success(result.ResultMessage);
+                    setTimeout(
+                        window.open(result.RedirectToUrl, "_self")
+                        , 15000);
+                }
+                else {
+                    toastr.error(result.ResultMessage)
+                }
+            },
+            error: function (errormessage) {
+                toastr.error("Error");
+            }
+        });
+    }
+</script>

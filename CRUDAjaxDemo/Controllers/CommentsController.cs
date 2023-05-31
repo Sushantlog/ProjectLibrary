@@ -28,21 +28,73 @@ namespace CRUDAjaxDemo.Controllers
         // POST: Comments
         public ActionResult SaveComments(CommentsViewModel objComment)
         {
+            if (Session["UserID"] != null && Session["UserID"].ToString() != objComment.UserId.ToString())
+            {
+                return RedirectToAction("Index", "login");
+            }
+
             using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                tbl_Comments tblComments = new tbl_Comments();
-                tblComments.UserID = objComment.UserId;
-                tblComments.CommentHeader = objComment.CommentHeader;
-                tblComments.CommentDescription = objComment.CommentDescription;
-                std.tbl_Comments.Add(tblComments);
-                std.SaveChanges();
-
-                return Json(new
+                var IsValid = false;
+                var ResultMessage = string.Empty;
+                var Id = 0;
+                if (!objComment.IsEdit)
                 {
-                    IsValid = true,
-                    ResultMessage = "Comment saved Successfully",
-                    Id = tblComments.CommentId,
-                }, JsonRequestBehavior.AllowGet);
+                    tbl_Comments tblComments = new tbl_Comments();
+                    tblComments.UserID = objComment.UserId;
+                    tblComments.CommentHeader = objComment.CommentHeader;
+                    tblComments.CommentDescription = objComment.CommentDescription;
+                    std.tbl_Comments.Add(tblComments);
+                    std.SaveChanges();
+
+                    return Json(new
+                    {
+                        IsValid = true,
+                        ResultMessage = "Comment saved Successfully",
+                        Id = tblComments.CommentId,
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    tbl_Comments tblComments = std.tbl_Comments.Where(m => m.CommentId == objComment.CommentId && m.UserID == objComment.UserId).FirstOrDefault();
+                    if (tblComments != null)
+                    {
+                        tblComments.CommentHeader = objComment.CommentHeader;
+                        tblComments.CommentDescription = objComment.CommentDescription;
+                        std.SaveChanges();
+                        IsValid = true;
+                        ResultMessage = "Comment saved Successfully";
+                        Id = tblComments.CommentId;
+                    }
+                    else
+                    {
+                        IsValid = false;
+                        ResultMessage = "Record not found.";
+                    }
+
+                    return Json(new
+                    {
+                        IsValid = IsValid,
+                        ResultMessage = ResultMessage,
+                        Id = Id,
+                    }, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
+        public ActionResult ShowComments(int Id)
+        {
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
+            {
+                var comments = std.tbl_Comments.Where(m => m.UserID == Id).AsEnumerable().Select((m, i) => new CommentsViewModel
+                {
+                    Index = i + 1,
+                    CommentId = m.CommentId,
+                    UserId = (int)m.UserID,
+                    CommentHeader = m.CommentHeader,
+                    CommentDescription = m.CommentDescription
+                }).ToList();
+                return View(comments);
             }
         }
     }

@@ -30,7 +30,7 @@
 </div>
 <div class="container">
     <div class="form-box">
-        <h2>Comment</h2>
+        <h2 class="pageHeader">Add Comment</h2>
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
@@ -46,7 +46,9 @@
                 @Html.TextBoxFor(model => model.CommentDescription, new { @placeholder = "Description" })
             </div>
             <div class="button">
-                <input value="Save" class="btn" type="button" onclick="Save()" />
+                <input value="Save" class="btn Save" type="button" onclick="Save(false)" />
+                <input value="Save" class="btn Edit" type="button" onclick="Save(true)" />
+                <a href="@Url.Action("ShowComments", "Comments", new { Id=Model.UserId})" class="btn btn-info"><span>Show Comments</span></a>
             </div>
         }
     </div>
@@ -55,10 +57,19 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        //tostr.success("me1");
+        if (@Model.CommentId > 0 ) {
+            $('.pageHeader').html('Edit Comment')
+            $('.Edit').show();
+            $('.Save').hide();
+        }
+        else {
+            $('.pageHeader').html('Add Comment')
+            $('.Edit').hide();
+            $('.Save').show();
+        }
     });
 
-    function Save() {
+    function Save(IsEdit) {
 
         if ($("#CommentHeader").val() == undefined || $("#CommentHeader").val() == '') {
             toastr.error("Please enter header");
@@ -74,6 +85,7 @@
         objComment.UserId = $("#UserId").val();
         objComment.CommentHeader = $("#CommentHeader").val();
         objComment.CommentDescription = $("#CommentDescription").val();
+        objComment.IsEdit = $("#IsEdit").val();
 
         var data = JSON.stringify({ objComment: objComment });
         $.ajax({
@@ -85,7 +97,7 @@
             success: function (result) {
                 if (result.IsValid) {
                     toastr.success(result.ResultMessage);
-                    $("#CommentId").val(result.CommentId);
+                    $("#CommentId").val(result.Id);
                 }
                 else {
                     toastr.error(result.ResultMessage)

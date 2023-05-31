@@ -116,6 +116,7 @@
     <Content Include="Html\project.html" />
     <Content Include="Html\style.css" />
     <Content Include="Html\upload.html" />
+    <Content Include="Images\Contact.png" />
     <Content Include="Images\Delete.png" />
     <Content Include="Images\Download.png" />
     <Content Include="Images\Edit.png" />
@@ -222,6 +223,8 @@
     <Content Include="Views\Synopsis\ViewFiles.cshtml" />
     <Content Include="Views\Registration\UserProfile.cshtml" />
     <Content Include="Views\Comments\Index.cshtml" />
+    <Content Include="Views\Registration\EditUserProfile.cshtml" />
+    <Content Include="Views\Comments\ShowComments.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
