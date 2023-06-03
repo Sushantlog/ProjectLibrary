@@ -274,6 +274,39 @@ namespace CRUDAjaxDemo.Controllers
                     ResultMessage = ResultMessage
                 }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        public ActionResult DeleteSynopsys(int? SynopsysId)
+        {
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
+            {
+                var IsValid = false;
+                var ResultMessage = "";
+                var SynopsysDetails = std.tbl_SynopsisDetails.Where(m => m.SynopsisID == SynopsysId).FirstOrDefault();
+
+                if (SynopsysDetails != null)
+                {
+                    var FileDetails = std.tbl_FilesDetails.Where(m => m.SynopsisID == SynopsysId).ToList();
+                    std.tbl_FilesDetails.RemoveRange(FileDetails);
+                    std.SaveChanges();
+
+                    std.tbl_SynopsisDetails.Remove(SynopsysDetails);
+                    std.SaveChanges();
+
+                    IsValid = true;
+                    ResultMessage = "Project Deleted successfully!";
+                }
+                else
+                {
+                    IsValid = false;
+                    ResultMessage = "Record not exist!";
+                }
+                return Json(new
+                {
+                    IsValid = IsValid,
+                    ResultMessage = ResultMessage
+                }, JsonRequestBehavior.AllowGet);
+            }
 
         }
         public ActionResult SearchProject(int Id)

@@ -17,7 +17,7 @@ namespace CRUDAjaxDemo.ViewModels
 
     public class ShowCommentsViewModel
     {
-        public int Index { get; set; }
+        public int LoginUserId { get; set; }
         public List<CommentsViewModel> CommentList { get; set; }
     }
 }

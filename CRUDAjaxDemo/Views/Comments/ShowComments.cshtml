@@ -1,9 +1,17 @@
-﻿@model IEnumerable<CRUDAjaxDemo.ViewModels.CommentsViewModel>
+﻿@model CRUDAjaxDemo.ViewModels.ShowCommentsViewModel
 @{
     ViewBag.Title = "ShowComments";
 }
 
 <style>
+    body {
+        padding-top: 0px !important;
+        padding-bottom: 20px;
+    }
+
+    .ActionIcon {
+        height: 20px;
+    }
 
     .table {
         font-family: Arial, Helvetica, sans-serif;
@@ -32,16 +40,24 @@
             color: white;
         }
 
+    .header {
+        background-color: white;
+        color: black;
+        min-height: 70px !important;
+        align-items: center;
+        text-align: center;
+    }
+
     .headerText {
         padding-top: 15px;
     }
 
     .btnDiv {
+        width: 100%;
         text-align: right;
         padding: 10px;
-        top: 0px !important;
+        top: 0 !important;
         position: absolute;
-        width: 100%;
     }
 
     .form-box {
@@ -56,12 +72,21 @@
         padding: 10px !important;
     }
 
+    .container {
+        display: block !important;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        max-width: 100% !important;
+        padding: 0px !important;
+    }
 </style>
-@*<div class="btnDiv">
-    <a href="@Url.Action("Index", "Home")" class="btn btn-info"><span>Home</span></a>
-</div>*@
+<div class="btnDiv">
+    <a href="@Url.Action("Index", "Home", new { Id= Model.LoginUserId})" class="btn btn-info"><span>Home</span></a>
+</div>
 <div class="header">
     <h2 class="headerText">Comments</h2>
+    @Html.HiddenFor(m => m.LoginUserId)
 </div>
 <table id="tblRecord" class="table" style="background-color:white;color:black">
     <thead>
@@ -79,7 +104,7 @@
         </tr>
     </thead>
     <tbody class="tbody">
-        @foreach (var item in Model)
+        @foreach (var item in Model.CommentList)
         {
             <tr>
                 <td>
@@ -95,15 +120,44 @@
                 </td>
 
                 <td>
-                    @*<div class="button">
-                            <a href="@Url.Action("EditSynopsisDetails", "Synopsis", new { UserId = item.UserId,@synopsisId=item.SynopsisId})">
-                                <img src="~/Images/Edit.png" class="downloadIcon" />
-                            </a>
-                        </div>*@
+                    <div class="button">
+                        <a href="@Url.Action("EditComment", "Comments", new { UserId = item.UserId,CommentId=item.CommentId})">
+                            <img src="~/Images/Edit.png" class="ActionIcon" />
+                        </a>
+
+                        <img src="~/Images/Delete.png" class="downloadIcon" onclick="DeleteFile(@item.CommentId)" />
+                    </div>
                 </td>
             </tr>
         }
 
     </tbody>
 </table>
+<script>
+    function DeleteFile(CommentId) {
+        if (confirm("Are you sure you want to delete project?")) {
+            var data = JSON.stringify({ CommentId: CommentId });
+            $.ajax({
+                url: "/Comments/DeleteComment",
+                type: "POST",
+                data: data,
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    if (result.IsValid) {
+                        toastr.success(result.ResultMessage);
+                        location.reload();
+                    }
+                    else {
+                        toastr.error(result.ResultMessage)
+                    }
+                },
+                error: function (errormessage) {
+                    toastr.error("Error");
+                }
+            });
+        }
+    }
+</script>
+
 

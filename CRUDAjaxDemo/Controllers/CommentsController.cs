@@ -86,16 +86,69 @@ namespace CRUDAjaxDemo.Controllers
         {
             using (ProjectLibraryEntities std = new ProjectLibraryEntities())
             {
-                var comments = std.tbl_Comments.Where(m => m.UserID == Id).AsEnumerable().Select((m, i) => new CommentsViewModel
+                var comments = std.tbl_Comments.Where(m => m.UserID == Id).ToList();
+                var ShowCommentsViewModel = new ShowCommentsViewModel();
+                ShowCommentsViewModel.LoginUserId = Id;
+                ShowCommentsViewModel.CommentList = new List<CommentsViewModel>();
+                for (int i = 0; i < comments.Count; i++)
                 {
-                    Index = i + 1,
-                    CommentId = m.CommentId,
-                    UserId = (int)m.UserID,
-                    CommentHeader = m.CommentHeader,
-                    CommentDescription = m.CommentDescription
-                }).ToList();
-                return View(comments);
+                    CommentsViewModel objComment = new CommentsViewModel();
+                    objComment.Index = i + 1;
+                    objComment.UserId = (int)comments[i].UserID;
+                    objComment.CommentId = comments[i].CommentId;
+                    objComment.CommentHeader = comments[i].CommentHeader;
+                    objComment.CommentDescription = comments[i].CommentDescription;
+                    ShowCommentsViewModel.CommentList.Add(objComment);
+                }
+                return View(ShowCommentsViewModel);
             }
+        }
+
+        public ActionResult EditComment(int userId, int CommentId)
+        {
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
+            {
+                var commentDetails = std.tbl_Comments.Where(m => m.CommentId == CommentId && m.UserID == userId).FirstOrDefault();
+                CommentsViewModel objComment = new CommentsViewModel();
+                if (commentDetails != null)
+                {
+                    objComment.CommentId = commentDetails.CommentId;
+                    objComment.UserId = (int)commentDetails.UserID;
+                    objComment.CommentHeader = commentDetails.CommentHeader;
+                    objComment.CommentDescription = commentDetails.CommentDescription;
+                }
+                return View("Index", objComment);
+            }
+        }
+
+
+        public ActionResult DeleteComment(int CommentId)
+        {
+            using (ProjectLibraryEntities std = new ProjectLibraryEntities())
+            {
+                var IsValid = false;
+                var ResultMessage = "";
+                var CommentDetails = std.tbl_Comments.Where(m => m.CommentId == CommentId).FirstOrDefault();
+                if (CommentDetails != null)
+                {
+                    std.tbl_Comments.Remove(CommentDetails);
+                    std.SaveChanges();
+
+                    IsValid = true;
+                    ResultMessage = "Comment Deleted successfully!";
+                }
+                else
+                {
+                    IsValid = false;
+                    ResultMessage = "Record not exist!";
+                }
+                return Json(new
+                {
+                    IsValid = IsValid,
+                    ResultMessage = ResultMessage
+                }, JsonRequestBehavior.AllowGet);
+            }
+
         }
     }
 }

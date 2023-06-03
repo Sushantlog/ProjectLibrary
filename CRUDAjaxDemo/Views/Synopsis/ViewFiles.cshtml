@@ -22,7 +22,7 @@
         padding: 0px !important;
     }
 
-    .downloadIcon {
+    .ActionIcon {
         height: 20px;
     }
 
@@ -181,7 +181,7 @@
                     {
                         @Html.DisplayFor(model => files.FileName)
                         <a href="@Url.Action("Download", "Synopsis", new { FileId = @files.FileID })">
-                            <img src="~/Images/Download.png" class="downloadIcon" />
+                            <img src="~/Images/Download.png" class="ActionIcon" />
                         </a>
                         <br />
                     }
@@ -191,8 +191,10 @@
                     {
                         <div class="button">
                             <a href="@Url.Action("EditSynopsisDetails", "Synopsis", new { UserId = Model.LoginUserId,@synopsisId=item.SynopsisId})">
-                                <img src="~/Images/Edit.png" class="downloadIcon" />
+                                <img src="~/Images/Edit.png" class="ActionIcon" />
                             </a>
+
+                            <img src="~/Images/Delete.png" class="downloadIcon" onclick="DeleteSynopsys(@item.SynopsisId)" />
                         </div>
                     }
                 </td>
@@ -215,6 +217,32 @@
     $(document).ready(function () {
 
     });
+
+
+    function DeleteSynopsys(SynopsysId) {
+        if (confirm("Are you sure you want to delete synopsis?")) {
+            var data = JSON.stringify({ SynopsysId: SynopsysId });
+            $.ajax({
+                url: "/Synopsis/DeleteSynopsys/",
+                type: "POST",
+                data: data,
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    if (result.IsValid) {
+                        toastr.success(result.ResultMessage);
+                        location.reload();
+                    }
+                    else {
+                        toastr.error(result.ResultMessage)
+                    }
+                },
+                error: function (errormessage) {
+                    toastr.error("Error");
+                }
+            });
+        }
+    }
 </script>
 
 

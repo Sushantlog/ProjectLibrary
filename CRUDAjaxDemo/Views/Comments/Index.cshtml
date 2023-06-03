@@ -37,6 +37,7 @@
             <p id="result"></p>
             @Html.HiddenFor(model => model.UserId)
             @Html.HiddenFor(model => model.CommentId)
+            @Html.Hidden("IsEdit")
             <div class="input-box">
                 <i class='bx bxs-user'></i>
                 @Html.TextBoxFor(model => model.CommentHeader, new { @placeholder = "Header" })
@@ -46,6 +47,7 @@
                 @Html.TextBoxFor(model => model.CommentDescription, new { @placeholder = "Description" })
             </div>
             <div class="button">
+                <input value="Add New" class="btn AddNew" type="button" onclick="AddNew()" />
                 <input value="Save" class="btn Save" type="button" onclick="Save(false)" />
                 <input value="Save" class="btn Edit" type="button" onclick="Save(true)" />
                 <a href="@Url.Action("ShowComments", "Comments", new { Id=Model.UserId})" class="btn btn-info"><span>Show Comments</span></a>
@@ -69,8 +71,17 @@
         }
     });
 
+    function AddNew() {
+        $('.pageHeader').html('Add Comment')
+        $('.Edit').hide();
+        $('.Save').show();
+        $("#IsEdit").val(false);
+        $("#CommentId").val(0);
+        $("#CommentHeader").val(''); 
+        $("#CommentDescription").val('');
+    }
     function Save(IsEdit) {
-
+        $("#IsEdit").val(IsEdit);
         if ($("#CommentHeader").val() == undefined || $("#CommentHeader").val() == '') {
             toastr.error("Please enter header");
             return;
@@ -83,6 +94,7 @@
 
         var objComment = new Object();
         objComment.UserId = $("#UserId").val();
+        objComment.CommentId = $("#CommentId").val();
         objComment.CommentHeader = $("#CommentHeader").val();
         objComment.CommentDescription = $("#CommentDescription").val();
         objComment.IsEdit = $("#IsEdit").val();
@@ -96,8 +108,13 @@
             dataType: "json",
             success: function (result) {
                 if (result.IsValid) {
+                    debugger;
                     toastr.success(result.ResultMessage);
                     $("#CommentId").val(result.Id);
+                    $('.pageHeader').html('Edit Comment')
+                    $('.Edit').show();
+                    $('.Save').hide();
+                    $("#IsEdit").val(true);
                 }
                 else {
                     toastr.error(result.ResultMessage)
