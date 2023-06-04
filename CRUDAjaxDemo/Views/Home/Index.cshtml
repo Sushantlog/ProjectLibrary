@@ -228,12 +228,12 @@
                     <p>Edit Profile</p>
                     <span>></span>
                 </a>
-                <a href="#" class="sub-menu-link">
+                <a href="@Url.Action("ChangePasswordPage","Login",new { Id= Model.UserId})" class="sub-menu-link">
                     <img src="../../images/setting.png" alt="">
                     <p>Change Password</p>
                     <span>></span>
                 </a>
-                <a href="#" class="sub-menu-link">
+                <a href="@Url.Action("Index","Contacts", new { Id=Model.UserId})" class="sub-menu-link">
                     <img src="../../images/Contact.png" alt="">
                     <p>Contact</p>
                     <span>></span>

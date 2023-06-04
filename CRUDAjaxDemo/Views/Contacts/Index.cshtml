@@ -1,0 +1,162 @@
+﻿@model CRUDAjaxDemo.ViewModels.ContactViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    body {
+        padding: 0px;
+    }
+
+    .container {
+        display: contents !important;
+        float: inherit;
+    }
+
+    .square {
+        height: auto;
+        width: 23%;
+        background-color: #ffffff;
+        color: navy;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 13px;
+        float: left;
+        margin-left: 10px !important;
+    }
+
+    .btnDiv {
+        width: 100%;
+        text-align: right;
+        padding: 10px;
+        top: 0 !important;
+        position: absolute;
+        float: right;
+    }
+
+    h3 {
+        color: #323d87 !important;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .headerDiv {
+        text-align: center;
+        width: 100%;
+        display: block;
+        float: left;
+        background-color: white;
+        padding: 10px;
+        border-radius: 5px;
+        min-height: 70px;
+        padding-top: 10px;
+    }
+
+    .SupportedEmail {
+        text-align: center;
+        width: 100%;
+        display: block;
+        float: left;
+        background-color: white;
+        padding: 10px;
+        border-radius: 5px;
+        min-height: 50px;
+        padding-top: 10px;
+        font-weight: 700;
+    }
+
+    .ContactUsDiv {
+        text-align: center;
+        width: 100%;
+        display: block;
+        float: left;
+        background-color: lightgray;
+        padding: 10px;
+        border-radius: 5px;
+        padding-top: 10px;
+        min-height:350px;
+    }
+
+    .ContactDiv {
+        text-align: center;
+        align-content: center;
+        background-color:lightgray;
+        width:100%;
+        float:left
+    }
+
+    textarea {
+        resize: none;
+    }
+</style>
+
+
+<div class="headerDiv">
+    <h2>
+        Contact Details
+    </h2>
+</div>
+<br />
+<div class="ContactDiv">
+    @foreach (var item in Model.ContactList)
+    {
+        <div class="square">
+            <h4>@item.Name</h4><br />
+            <i class='bx bxs-envelope'></i><span>@item.Email</span><br />
+            <i class='bx bxs-contact'></i><span>@item.MobileNumber</span><br />
+        </div>
+    }
+</div>
+<div class="SupportedEmail">
+    <span>Email: @Model.SupportEmail</span>
+</div>
+
+<div class="ContactUsDiv">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="input-box">
+            @Html.TextArea("Message", string.Empty, 10, 55, new { @placeholder = "Message", })
+        </div>
+        <div class="button">
+            <input value="Send mail" class="btn btn-info" type="button" onclick="Send()" />
+        </div>
+    }
+</div>
+
+<div class="btnDiv">
+    <a href="@Url.Action("Index", "Home", new { Id=Model.LoginUserId})" class="btn btn-info"><span>Home</span></a>
+</div>
+
+
+<script>
+    function Send() {
+        if (confirm("Are you sure to send mail?")) {
+            var ObjMail = new Object();
+            ObjMail.UserId= @Model.LoginUserId;
+            ObjMail.Message = $('#Message').val() ;
+            var data = JSON.stringify({ ObjMail: ObjMail});
+            $.ajax({
+                url: "/Contacts/SendMail",
+                type: "POST",
+                data: data,
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    if (result.IsValid) {
+                        toastr.success(result.ResultMessage);
+                        $('#Message').val('')
+                    }
+                    else {
+                        toastr.error(result.ResultMessage)
+                    }
+                },
+                error: function (errormessage) {
+                    toastr.error("Error");
+                }
+            });
+        }
+    }
+</script>

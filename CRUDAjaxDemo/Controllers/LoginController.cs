@@ -98,7 +98,7 @@ namespace CRUDAjaxDemo.Controllers
                     try
                     {
                         string username = "TestAppSushant2023@Gmail.com";
-                        string password = "eqeemquxqoaphqus";
+                        string password = "hfjejdequdchldex";
                         ICredentialsByHost credentials = new NetworkCredential(username, password);
 
                         SmtpClient smtpClient = new SmtpClient()
@@ -182,6 +182,17 @@ namespace CRUDAjaxDemo.Controllers
             }
         }
 
+        public ActionResult ChangePasswordPage(int Id)
+        {
+            if (Session["UserID"] != null && Session["UserID"].ToString() != Id.ToString())
+            {
+                return RedirectToAction("Index", "login");
+            }
+            LoginViewModel objlogin = new LoginViewModel();
+            objlogin.UserId = Id;
+            return View(objlogin);
+
+        }
         public JsonResult ChangePassword(LoginViewModel objChangePassword)
         {
             using (ProjectLibraryEntities std = new ProjectLibraryEntities())
@@ -205,7 +216,7 @@ namespace CRUDAjaxDemo.Controllers
                     try
                     {
                         string username = "TestAppSushant2023@Gmail.com";
-                        string password = "eqeemquxqoaphqus";
+                        string password = "hfjejdequdchldex";
                         ICredentialsByHost credentials = new NetworkCredential(username, password);
 
                         SmtpClient smtpClient = new SmtpClient()
@@ -218,7 +229,7 @@ namespace CRUDAjaxDemo.Controllers
 
                         MailMessage mail = new MailMessage();
                         mail.From = new MailAddress(username);
-                        mail.To.Add(objChangePassword.Email);
+                        mail.To.Add(UserDetails.Email);
                         mail.Subject = "Password Changed for Project Library";
                         string Body = "Password changed for user Id : " + objChangePassword.Email + "\nNew Password is: " + UserDetails.Password;
                         mail.Body = Body;

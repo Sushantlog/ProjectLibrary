@@ -109,9 +109,10 @@
 
     .Pager {
         color: white;
-        width:100%;
-        text-align:center;
+        width: 100%;
+        text-align: center;
     }
+
     .SearchBox {
         color: black;
         display: flex;
@@ -123,6 +124,7 @@
         .SearchBox input, select {
             width: 50%
         }
+
     .btnDiv {
         width: 100%;
         text-align: right;
@@ -201,7 +203,6 @@
     });
 
     function Search(pageIndex) {
-        debugger;
         var objSearch = new Object();
         objSearch.UserId = $("#LoginUserId").val();
         objSearch.UserName = $("#UserName").val();
@@ -240,16 +241,16 @@
             var fileHtml = '';
             for (var i = 0; i < files.length; i++) {
                 fileHtml += '<span>' + files[i].FileName + '</span>';
-                //fileHtml += '<a href="Synopsis/Download/' + files[i].FileID + '"" >';
-                //fileHtml += '<img src = "../../Images/Download.png"" class="downloadIcon" />';
-                //fileHtml += '</a>';
+                fileHtml += '<a href="@Url.Action("Download", "Synopsis")?FileId=' + files[i].FileID + '"><i class="bx bx-download"></i>';
+                fileHtml += '</a>';
                 fileHtml += '</br>';
             }
 
             var editButton = ''
-            //if (item.UserId == $("#LoginUserId").val()) {
-            //    editButton = '<input id="EditBtn" value="Edit" class="btn" type="button" onclick="EditSynopsisDetails(' + item.SynopsisId + ')" />';
-            //}
+            if (item.UserId == $("#LoginUserId").val()) {
+                editButton += '<a href="@Url.Action("EditSynopsisDetails", "Synopsis")?UserId=' + item.UserId + '&SynopsisId=' + item.SynopsisId + '"><i class="bx bx-edit"></i></a>';
+                editButton += '   <i class="bx bx-trash" onclick="DeleteSynopsys('+item.SynopsisId+')"></i>';
+            }
 
             html += '<tr>';
             html += '<td>' + item.Index + '</td>';
@@ -266,4 +267,28 @@
 
     }
 
+    function DeleteSynopsys(SynopsysId) {
+        if (confirm("Are you sure you want to delete synopsis?")) {
+            var data = JSON.stringify({ SynopsysId: SynopsysId });
+            $.ajax({
+                url: "/Synopsis/DeleteSynopsys/",
+                type: "POST",
+                data: data,
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    if (result.IsValid) {
+                        toastr.success(result.ResultMessage);
+                        location.reload();
+                    }
+                    else {
+                        toastr.error(result.ResultMessage)
+                    }
+                },
+                error: function (errormessage) {
+                    toastr.error("Error");
+                }
+            });
+        }
+    }
 </script>

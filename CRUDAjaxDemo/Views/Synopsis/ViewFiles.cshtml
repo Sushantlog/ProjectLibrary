@@ -181,7 +181,7 @@
                     {
                         @Html.DisplayFor(model => files.FileName)
                         <a href="@Url.Action("Download", "Synopsis", new { FileId = @files.FileID })">
-                            <img src="~/Images/Download.png" class="ActionIcon" />
+                            <i class="bx bx-download"></i>
                         </a>
                         <br />
                     }
@@ -191,10 +191,9 @@
                     {
                         <div class="button">
                             <a href="@Url.Action("EditSynopsisDetails", "Synopsis", new { UserId = Model.LoginUserId,@synopsisId=item.SynopsisId})">
-                                <img src="~/Images/Edit.png" class="ActionIcon" />
+                                <i class="bx bx-edit"></i>
                             </a>
-
-                            <img src="~/Images/Delete.png" class="downloadIcon" onclick="DeleteSynopsys(@item.SynopsisId)" />
+                            <i class='bx bx-trash' onclick="DeleteSynopsys(@item.SynopsisId)"></i>
                         </div>
                     }
                 </td>

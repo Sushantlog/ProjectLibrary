@@ -122,10 +122,9 @@
                 <td>
                     <div class="button">
                         <a href="@Url.Action("EditComment", "Comments", new { UserId = item.UserId,CommentId=item.CommentId})">
-                            <img src="~/Images/Edit.png" class="ActionIcon" />
+                            <i class="bx bx-edit"></i>
                         </a>
-
-                        <img src="~/Images/Delete.png" class="downloadIcon" onclick="DeleteFile(@item.CommentId)" />
+                        <i class='bx bx-trash' onclick="DeleteComment(@item.CommentId)"></i>
                     </div>
                 </td>
             </tr>
@@ -134,7 +133,7 @@
     </tbody>
 </table>
 <script>
-    function DeleteFile(CommentId) {
+    function DeleteComment(CommentId) {
         if (confirm("Are you sure you want to delete project?")) {
             var data = JSON.stringify({ CommentId: CommentId });
             $.ajax({
